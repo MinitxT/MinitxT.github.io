@@ -1,1612 +1,891 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
-<title>Minit — Photographer & AOSP Developer</title>
-<link rel="preconnect" href="https://fonts.googleapis.com"/>
-<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;500;700&family=Inter:wght@300;400;500&display=swap" rel="stylesheet"/>
-<style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MinitxT — AOSP Developer</title>
+  <meta name="description" content="Student AOSP developer building custom ROMs for fun. crDroid & Evolution X for Moto Edge 40 Neo." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Space+Grotesk:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --void:     #03030a;
+      --deep:     #07071a;
+      --surface:  #0d0d22;
+      --card:     #12122e;
+      --border:   rgba(139,92,246,.18);
+      --purple:   #8b5cf6;
+      --violet:   #7c3aed;
+      --indigo:   #6366f1;
+      --pink:     #ec4899;
+      --rose:     #f43f5e;
+      --green:    #10b981;
+      --amber:    #f59e0b;
+      --text:     #f1f5f9;
+      --muted:    #94a3b8;
+      --subtle:   #475569;
+      --dim:      #1e1e42;
+      --glass:    rgba(255,255,255,.025);
+      --gp:       rgba(139,92,246,.45);
+      --gpk:      rgba(236,72,153,.35);
+    }
 
-:root{
-  --bg:       #05020a;
-  --bg2:      #0a0414;
-  --bg3:      #0f0619;
-  --rose:     #ff2d6b;
-  --pink:     #ff6eb4;
-  --purple:   #c026d3;
-  --violet:   #7c3aed;
-  --magenta:  #e879f9;
-  --deep:     #4a0040;
-  --white:    #f8f0ff;
-  --dim:      #7c6a8a;
-  --border:   rgba(255,45,107,0.15);
-  --grose:    rgba(255,45,107,0.08);
-  --gpink:    rgba(255,110,180,0.08);
-  --gpur:     rgba(192,38,211,0.08);
-}
+    *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
 
-html{scroll-behavior:smooth}
-body{
-  background:var(--bg);
-  color:var(--white);
-  font-family:'Inter',sans-serif;
-  font-size:15px;line-height:1.7;
-  overflow-x:hidden;cursor:none;
-}
+    html { scroll-behavior:smooth; overflow-x:hidden; }
 
-/* ═══ PARTICLE CANVAS (full bg) ════ */
-#particle-bg{
-  position:fixed;inset:0;z-index:0;
-  pointer-events:none;
-}
+    body {
+      background:var(--void);
+      color:var(--text);
+      font-family:'Space Grotesk',sans-serif;
+      min-height:100vh;
+      overflow-x:hidden;
+      cursor:none;
+    }
 
-/* ═══ AURORA BLOBS ════════════════ */
-#aurora{position:fixed;inset:0;z-index:1;pointer-events:none;overflow:hidden}
-.ablob{
-  position:absolute;border-radius:50%;
-  filter:blur(70px);will-change:transform;
-}
-.ablob:nth-child(1){
-  width:620px;height:620px;
-  background:radial-gradient(circle,rgba(255,45,107,.18),transparent 70%);
-  top:-200px;left:-100px;
-  animation:ab1 20s ease-in-out infinite;
-}
-.ablob:nth-child(2){
-  width:520px;height:520px;
-  background:radial-gradient(circle,rgba(192,38,211,.16),transparent 70%);
-  top:20%;right:-150px;
-  animation:ab2 26s ease-in-out infinite;
-}
-.ablob:nth-child(3){
-  width:440px;height:440px;
-  background:radial-gradient(circle,rgba(124,58,237,.14),transparent 70%);
-  bottom:10%;left:20%;
-  animation:ab3 32s ease-in-out infinite;
-}
-@keyframes ab1{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(60px,-40px) scale(1.1)}66%{transform:translate(-30px,50px) scale(.95)}}
-@keyframes ab2{0%,100%{transform:translate(0,0) scale(1)}33%{transform:translate(-50px,30px) scale(1.08)}66%{transform:translate(40px,-60px) scale(.97)}}
-@keyframes ab3{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(30px,-40px) scale(1.05)}}
+    /* ── Scrollbar ── */
+    ::-webkit-scrollbar { width:5px; }
+    ::-webkit-scrollbar-track { background:var(--deep); }
+    ::-webkit-scrollbar-thumb { background:var(--violet); border-radius:3px; }
 
-/* ═══ CODE RAIN BG ════════════════ */
-#code-rain{position:fixed;inset:0;z-index:2;pointer-events:none;opacity:.07}
+    /* ── Custom cursor ── */
+    #cur {
+      position:fixed; width:10px; height:10px;
+      background:var(--purple); border-radius:50%;
+      pointer-events:none; z-index:9999;
+      transform:translate(-50%,-50%);
+      transition:transform .08s;
+      mix-blend-mode:screen;
+    }
+    #cur-ring {
+      position:fixed; width:28px; height:28px;
+      border:1px solid rgba(139,92,246,.5); border-radius:50%;
+      pointer-events:none; z-index:9998;
+      transform:translate(-50%,-50%);
+      transition:all .18s ease;
+    }
 
-/* ═══ SCANLINES ═══════════════════ */
-#scanline{
-  position:fixed;inset:0;z-index:9970;pointer-events:none;
-  background:repeating-linear-gradient(to bottom,transparent 0,transparent 3px,rgba(0,0,0,.05) 3px,rgba(0,0,0,.05) 4px);
-}
+    /* ── Sakura canvas ── */
+    #sk { position:fixed; inset:0; pointer-events:none; z-index:0; }
 
-/* ═══ CURSOR ══════════════════════ */
-#cur{
-  width:10px;height:10px;
-  position:fixed;top:0;left:0;
-  pointer-events:none;z-index:9999;
-  transform:translate(-50%,-50%);
-}
-#cur-inner{
-  width:100%;height:100%;
-  background:var(--rose);
-  box-shadow:0 0 12px var(--rose),0 0 24px rgba(255,45,107,.5);
-  clip-path:polygon(0 0,100% 0,100% 60%,60% 60%,60% 100%,0 100%);
-}
-#cur-ring{
-  width:38px;height:38px;border-radius:50%;
-  border:1px solid rgba(255,45,107,.5);
-  position:fixed;top:0;left:0;
-  pointer-events:none;z-index:9998;
-  transform:translate(-50%,-50%);
-  transition:width .25s,height .25s,border-color .2s;
-  box-shadow:0 0 20px rgba(255,45,107,.1);
-}
-body:has(a:hover) #cur-ring,body:has(button:hover) #cur-ring{
-  width:56px;height:56px;border-color:var(--pink);
-  box-shadow:0 0 30px rgba(255,110,180,.25);
-}
-#cur-trail{position:fixed;inset:0;pointer-events:none;z-index:9997}
+    /* ── Grid overlay ── */
+    .bg-grid {
+      position:fixed; inset:0; pointer-events:none; z-index:0;
+      background-image:
+        linear-gradient(rgba(139,92,246,.04) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(139,92,246,.04) 1px,transparent 1px);
+      background-size:55px 55px;
+    }
 
-/* ═══ NAV ═════════════════════════ */
-nav{
-  position:fixed;top:0;left:0;right:0;z-index:500;
-  display:flex;align-items:center;justify-content:space-between;
-  padding:.85rem 2.5rem;
-  background:rgba(5,2,10,.65);
-  backdrop-filter:blur(18px) saturate(180%);
-  border-bottom:1px solid rgba(255,45,107,.08);
-}
-nav::after{
-  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--rose),var(--purple),var(--pink),transparent);
-  opacity:.3;animation:navGlow 4s ease-in-out infinite;
-}
-@keyframes navGlow{0%,100%{opacity:.3}50%{opacity:.6}}
-.nav-logo{
-  font-family:'JetBrains Mono',monospace;font-size:.75rem;
-  color:var(--white);text-decoration:none;letter-spacing:.12em;
-  position:relative;
-}
-.nav-logo .r{color:var(--rose);text-shadow:0 0 14px var(--rose)}
-.nav-logo .p{color:var(--magenta);text-shadow:0 0 14px var(--magenta)}
-.nav-links{display:flex;gap:2rem;list-style:none}
-.nav-links a{
-  font-family:'JetBrains Mono',monospace;font-size:.62rem;
-  color:var(--dim);text-decoration:none;letter-spacing:.1em;
-  transition:color .2s,text-shadow .2s;position:relative;padding-bottom:2px;
-}
-.nav-links a::after{
-  content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,var(--rose),var(--purple));
-  transform:scaleX(0);transform-origin:left;transition:transform .3s;
-}
-.nav-links a:hover{color:var(--white);text-shadow:0 0 12px rgba(255,110,180,.4)}
-.nav-links a:hover::after{transform:scaleX(1)}
+    /* ── NAV ── */
+    nav {
+      position:fixed; inset:0 0 auto 0; z-index:200;
+      display:flex; align-items:center; justify-content:space-between;
+      padding:18px 56px;
+      background:rgba(3,3,10,.72);
+      backdrop-filter:blur(24px);
+      border-bottom:1px solid var(--border);
+    }
+    .nav-logo {
+      font-family:'Orbitron',monospace; font-size:1.1rem; font-weight:900;
+      letter-spacing:2px;
+      background:linear-gradient(135deg,#c084fc,#8b5cf6,#ec4899);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .nav-links { display:flex; gap:36px; }
+    .nav-links a {
+      color:var(--muted); text-decoration:none;
+      font-family:'JetBrains Mono',monospace; font-size:.8rem; letter-spacing:1px;
+      transition:color .3s;
+      position:relative;
+    }
+    .nav-links a::after {
+      content:''; position:absolute; bottom:-5px; left:0;
+      width:0; height:1px; background:var(--purple); transition:width .3s;
+    }
+    .nav-links a:hover { color:var(--text); }
+    .nav-links a:hover::after { width:100%; }
 
-/* ═══ HERO ════════════════════════ */
-#hero{
-  min-height:100vh;
-  display:grid;grid-template-columns:1fr 1fr;
-  position:relative;overflow:hidden;
-}
+    /* ── MAIN ── */
+    main { position:relative; z-index:1; }
 
-/* PHOTO SIDE */
-.hero-photo{
-  display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
-  padding:8rem 7rem 4rem 5rem;
-  position:relative;overflow:hidden;
-  border-right:1px solid rgba(255,45,107,.06);
-}
-.hero-photo::before{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse 80% 80% at 25% 55%,rgba(255,45,107,.1) 0%,transparent 70%);
-  animation:pGlow 7s ease-in-out infinite;pointer-events:none;
-}
-@keyframes pGlow{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.55;transform:scale(1.08)}}
-/* grain */
-.hero-photo::after{
-  content:'';position:absolute;inset:-20%;pointer-events:none;
-  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.07'/%3E%3C/svg%3E");
-  background-size:180px 180px;opacity:.8;
-  animation:grain .9s steps(1) infinite;
-  will-change:transform;
-}
-@keyframes grain{
-  0%{transform:translate(0,0)}20%{transform:translate(-45px,-20px)}
-  40%{transform:translate(25px,-55px)}60%{transform:translate(-15px,35px)}
-  80%{transform:translate(55px,10px)}
-}
+    /* ═══════════════════════════════
+       HERO
+    ═══════════════════════════════ */
+    #hero {
+      min-height:100vh;
+      display:flex; align-items:center; justify-content:center;
+      text-align:center;
+      padding:110px 24px 60px;
+      position:relative;
+    }
+    .hero-content { max-width:820px; }
 
-/* DEV SIDE */
-.hero-dev{
-  background:rgba(5,2,10,.8);
-  display:flex;flex-direction:column;justify-content:center;align-items:flex-start;
-  padding:8rem 5rem 4rem 7rem;
-  position:relative;overflow:hidden;
-}
-.hero-dev::before{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse 80% 80% at 75% 45%,rgba(192,38,211,.1) 0%,transparent 70%);
-  animation:dGlow 9s ease-in-out infinite;pointer-events:none;
-}
-@keyframes dGlow{0%,100%{opacity:1}50%{opacity:.4}}
+    .hero-eyebrow {
+      font-family:'JetBrains Mono',monospace; font-size:.85rem;
+      color:var(--purple); letter-spacing:4px; text-transform:uppercase;
+      margin-bottom:22px;
+      opacity:0; animation:fadeUp .8s .2s forwards;
+      min-height:1.2em;
+    }
 
-#code-rain-hero{
-  position:absolute;inset:0;pointer-events:none;
-  opacity:.13;z-index:0;
-}
+    .hero-name {
+      font-family:'Orbitron',monospace;
+      font-size:clamp(3.2rem,11vw,7.5rem);
+      font-weight:900; line-height:1;
+      margin-bottom:22px;
+      opacity:0; animation:fadeUp .8s .45s forwards;
+    }
+    .name-inner {
+      background:linear-gradient(135deg,#d8b4fe,#8b5cf6,#ec4899);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      position:relative; display:inline-block;
+    }
+    .name-inner::before {
+      content:attr(data-text); position:absolute; inset:0;
+      background:linear-gradient(135deg,#22d3ee,#6366f1);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      animation:g1 5s infinite; clip-path:polygon(0 0,100% 0,100% 38%,0 38%);
+    }
+    .name-inner::after {
+      content:attr(data-text); position:absolute; inset:0;
+      background:linear-gradient(135deg,#ec4899,#f43f5e);
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+      animation:g2 5s infinite; clip-path:polygon(0 62%,100% 62%,100% 100%,0 100%);
+    }
+    @keyframes g1 {
+      0%,88%,92%,96%,100% { transform:translate(0); opacity:0; }
+      89% { transform:translate(-4px,1px); opacity:.9; }
+      91% { transform:translate(4px,-1px); opacity:.9; }
+      93% { transform:translate(-2px,2px); opacity:.5; }
+      95% { transform:translate(3px,-2px); opacity:.9; }
+    }
+    @keyframes g2 {
+      0%,88%,92%,96%,100% { transform:translate(0); opacity:0; }
+      89% { transform:translate(4px,-1px); opacity:.9; }
+      91% { transform:translate(-4px,1px); opacity:.9; }
+      93% { transform:translate(2px,2px); opacity:.5; }
+      95% { transform:translate(-3px,-2px); opacity:.9; }
+    }
 
-/* hero eyebrows */
-.h-eyebrow{
-  font-family:'JetBrains Mono',monospace;font-size:.58rem;
-  letter-spacing:.25em;text-transform:uppercase;
-  margin-bottom:1.1rem;
-  display:flex;align-items:center;gap:.7rem;
-  opacity:0;animation:fadeUp .7s forwards;
-  position:relative;z-index:2;
-}
-.h-eyebrow.rose{color:var(--rose);animation-delay:.15s}
-.h-eyebrow.purple{color:var(--magenta);animation-delay:.25s}
-.h-eyebrow::before{content:'';width:18px;height:1px;background:currentColor;opacity:.6}
+    .hero-tagline {
+      font-size:clamp(.95rem,2.5vw,1.25rem); color:var(--muted);
+      margin-bottom:38px; font-weight:300;
+      opacity:0; animation:fadeUp .8s .7s forwards;
+    }
+    .hero-tagline .hl { color:var(--purple); font-weight:500; }
 
-/* hero headings */
-.h-photo-title{
-  font-family:'DM Serif Display',serif;
-  font-size:clamp(2rem,4.2vw,3.6rem);
-  line-height:1.18;color:var(--white);font-style:italic;
-  margin-bottom:.8rem;
-  opacity:0;animation:fadeUp .8s .3s forwards;
-  position:relative;z-index:2;
-}
-.h-photo-title em{
-  color:var(--pink);font-style:normal;
-  text-shadow:0 0 30px rgba(255,110,180,.6),0 0 60px rgba(255,110,180,.25);
-  animation:pinkGlow 3s ease-in-out infinite;
-}
-@keyframes pinkGlow{
-  0%,100%{text-shadow:0 0 28px rgba(255,110,180,.6),0 0 55px rgba(255,110,180,.2)}
-  50%{text-shadow:0 0 50px rgba(255,110,180,1),0 0 100px rgba(255,110,180,.4)}
-}
+    .hero-badges {
+      display:flex; gap:10px; justify-content:center; flex-wrap:wrap;
+      opacity:0; animation:fadeUp .8s .9s forwards;
+    }
+    .badge {
+      padding:7px 18px;
+      border:1px solid var(--border); border-radius:100px;
+      font-size:.78rem; font-family:'JetBrains Mono',monospace;
+      color:var(--muted); background:var(--glass);
+      backdrop-filter:blur(10px);
+      transition:all .3s;
+    }
+    .badge:hover { border-color:var(--purple); color:var(--purple); background:rgba(139,92,246,.1); }
 
-.h-dev-title{
-  font-family:'JetBrains Mono',monospace;
-  font-size:clamp(1rem,2vw,1.65rem);
-  font-weight:700;color:var(--rose);line-height:1.55;
-  margin-bottom:.8rem;
-  text-shadow:0 0 22px rgba(255,45,107,.55),0 0 44px rgba(255,45,107,.2);
-  opacity:0;animation:fadeUp .8s .4s forwards;
-  position:relative;z-index:2;
-  animation-fill-mode:forwards;
-}
-.h-dev-title .blink{
-  display:inline-block;width:2px;height:.95em;
-  background:var(--rose);vertical-align:middle;margin-left:3px;
-  box-shadow:0 0 10px var(--rose);
-  animation:blink 1s step-end infinite;
-}
+    .scroll-hint {
+      position:absolute; bottom:28px; left:50%; transform:translateX(-50%);
+      display:flex; flex-direction:column; align-items:center; gap:8px;
+      opacity:0; animation:fadeUp .8s 1.3s forwards;
+    }
+    .scroll-hint span {
+      font-family:'JetBrains Mono',monospace; font-size:.65rem;
+      color:var(--subtle); letter-spacing:3px;
+    }
+    .scroll-line {
+      width:1px; height:38px;
+      background:linear-gradient(to bottom,var(--purple),transparent);
+      animation:sline 2.2s infinite;
+    }
+    @keyframes sline {
+      0%   { transform:scaleY(0); transform-origin:top; }
+      50%  { transform:scaleY(1); transform-origin:top; }
+      51%  { transform:scaleY(1); transform-origin:bottom; }
+      100% { transform:scaleY(0); transform-origin:bottom; }
+    }
 
-.h-desc{
-  font-size:.82rem;line-height:1.9;
-  color:rgba(248,240,255,.55);max-width:300px;margin-bottom:2rem;
-  opacity:0;animation:fadeUp .7s forwards;
-  position:relative;z-index:2;
-}
-.h-desc.delay1{animation-delay:.48s}
-.h-desc.delay2{animation-delay:.58s}
+    /* ═══════════════════════════════
+       ABOUT
+    ═══════════════════════════════ */
+    #about {
+      padding:60px 24px 40px;
+      max-width:860px; margin:0 auto;
+    }
+    .about-wrap {
+      display:flex; align-items:center; gap:56px;
+      background:var(--glass);
+      border:1px solid var(--border); border-radius:24px;
+      padding:48px 52px;
+      backdrop-filter:blur(22px);
+      position:relative; overflow:hidden;
+    }
+    .about-wrap::before {
+      content:''; position:absolute; top:-60%; left:-40%;
+      width:200%; height:200%;
+      background:radial-gradient(circle at 40% 40%,rgba(139,92,246,.06) 0%,transparent 60%);
+      pointer-events:none;
+    }
 
-/* hero stats */
-.hero-stats{
-  display:flex;gap:2rem;margin-top:1rem;flex-wrap:wrap;
-  opacity:0;animation:fadeUp .7s .95s forwards;
-  position:relative;z-index:2;
-}
-.stat-item{display:flex;flex-direction:column;gap:.15rem}
-.stat-num{
-  font-family:'JetBrains Mono',monospace;font-size:1.05rem;font-weight:700;
-  background:linear-gradient(135deg,var(--rose),var(--pink));
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
-  background-clip:text;
-}
-.stat-lbl{
-  font-family:'JetBrains Mono',monospace;
-  font-size:.52rem;color:var(--dim);letter-spacing:.12em;text-transform:uppercase;
-}
+    /* Profile + Breathing rings */
+    .prof-wrap {
+      position:relative; flex-shrink:0;
+      width:150px; height:150px;
+    }
+    .ring {
+      position:absolute; border-radius:50%;
+      border:1px solid;
+      pointer-events:none;
+    }
+    .ring-1 { inset:-13px; border-color:rgba(139,92,246,.65); animation:breath 3.2s ease-in-out infinite; }
+    .ring-2 { inset:-28px; border-color:rgba(139,92,246,.3);  animation:breath 3.2s ease-in-out infinite .55s; }
+    .ring-3 { inset:-44px; border-color:rgba(236,72,153,.18); animation:breath 3.2s ease-in-out infinite 1.1s; }
 
-/* center name */
-.hero-center{
-  position:absolute;top:50%;left:50%;
-  transform:translate(-50%,-50%);
-  z-index:10;text-align:center;pointer-events:none;
-  opacity:0;animation:fadeUp .9s .85s forwards;
-  padding:1.6rem 3.2rem;
-}
-.hero-center::before{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse 75% 85% at 50% 50%,rgba(5,2,10,.97) 0%,rgba(5,2,10,.75) 55%,transparent 85%);
-  z-index:-1;
-}
-.center-name{
-  font-family:'DM Serif Display',serif;
-  font-size:clamp(2.8rem,5.5vw,4.5rem);
-  color:var(--white);line-height:1;letter-spacing:.05em;
-  position:relative;
-}
-.center-divider{
-  width:1px;height:56px;margin:.55rem auto;
-  background:linear-gradient(to bottom,var(--rose),var(--purple));
-  opacity:.6;
-}
-.center-tag{
-  font-family:'JetBrains Mono',monospace;font-size:.52rem;
-  color:var(--dim);letter-spacing:.22em;text-transform:uppercase;
-}
+    @keyframes breath {
+      0%,100% { transform:scale(.94); opacity:.35; }
+      50%      { transform:scale(1.06); opacity:1; }
+    }
 
-/* scroll hint */
-.scroll-hint{
-  position:absolute;bottom:2rem;left:50%;
-  transform:translateX(-50%);z-index:10;
-  font-family:'JetBrains Mono',monospace;font-size:.54rem;
-  color:var(--dim);letter-spacing:.18em;
-  display:flex;flex-direction:column;align-items:center;gap:.5rem;
-  animation:scrollBounce 2.4s ease-in-out infinite;
-}
-.scroll-hint::after{
-  content:'';width:1px;height:44px;
-  background:linear-gradient(to bottom,var(--rose),transparent);
-}
-@keyframes scrollBounce{
-  0%,100%{transform:translateX(-50%) translateY(0);opacity:.5}
-  50%{transform:translateX(-50%) translateY(8px);opacity:1}
-}
+    .prof-img {
+      width:150px; height:150px; border-radius:50%;
+      background:linear-gradient(135deg,var(--violet),var(--pink));
+      display:flex; align-items:center; justify-content:center;
+      font-family:'Orbitron',monospace; font-size:1.9rem; font-weight:900;
+      color:#fff; position:relative; z-index:1; overflow:hidden;
+      animation:breathImg 3.2s ease-in-out infinite;
+    }
+    .prof-img img {
+      width:100%; height:100%; object-fit:cover; border-radius:50%; display:block;
+    }
+    @keyframes breathImg {
+      0%,100% { transform:scale(1);    box-shadow:0 0 18px var(--gp),0 0 36px rgba(139,92,246,.2); }
+      50%      { transform:scale(1.05); box-shadow:0 0 36px var(--gp),0 0 72px rgba(139,92,246,.3),0 0 90px var(--gpk); }
+    }
 
-/* BUTTONS */
-.btn-rose{
-  font-family:'JetBrains Mono',monospace;font-size:.68rem;
-  padding:.78rem 1.6rem;letter-spacing:.07em;font-weight:700;
-  background:linear-gradient(135deg,var(--rose),var(--purple));
-  color:var(--white);border:none;cursor:none;text-decoration:none;
-  display:inline-block;position:relative;overflow:hidden;
-  clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));
-  transition:transform .15s,box-shadow .2s;
-  box-shadow:0 4px 22px rgba(255,45,107,.35);
-  opacity:0;animation:fadeUp .7s forwards;
-}
-.btn-rose.d1{animation-delay:.65s}
-.btn-rose::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(255,255,255,.18),transparent);
-  opacity:0;transition:opacity .2s;
-}
-.btn-rose:hover{transform:translateY(-3px);box-shadow:0 8px 32px rgba(255,45,107,.55)}
-.btn-rose:hover::before{opacity:1}
+    .about-text h2 {
+      font-family:'Orbitron',monospace; font-size:1.45rem; margin-bottom:14px;
+      background:linear-gradient(135deg,var(--text),var(--purple));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
+    .about-text p {
+      color:var(--muted); line-height:1.75; font-size:.93rem; margin-bottom:20px;
+    }
+    .about-text p em { color:var(--purple); font-style:normal; }
+    .about-tags { display:flex; gap:8px; flex-wrap:wrap; }
+    .a-tag {
+      padding:5px 13px; border-radius:100px;
+      background:rgba(139,92,246,.1); border:1px solid rgba(139,92,246,.3);
+      font-size:.72rem; color:var(--purple); font-family:'JetBrains Mono',monospace;
+    }
 
-.btn-ghost-rose{
-  font-family:'JetBrains Mono',monospace;font-size:.68rem;
-  padding:.78rem 1.6rem;letter-spacing:.07em;
-  background:rgba(255,45,107,.06);
-  backdrop-filter:blur(10px);
-  color:var(--pink);border:1px solid rgba(255,45,107,.3);
-  cursor:none;text-decoration:none;display:inline-block;
-  clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,10px 100%,0 calc(100% - 10px));
-  transition:transform .15s,background .2s,border-color .2s,box-shadow .2s;
-  opacity:0;animation:fadeUp .7s .78s forwards;
-  position:relative;z-index:2;
-}
-.btn-ghost-rose:hover{
-  background:rgba(255,45,107,.12);border-color:var(--rose);
-  transform:translateY(-3px);box-shadow:0 6px 26px rgba(255,45,107,.2);
-}
+    /* ── divider ── */
+    .divider {
+      display:flex; align-items:center; gap:20px;
+      max-width:860px; margin:36px auto; padding:0 24px;
+    }
+    .div-line { flex:1; height:1px; background:linear-gradient(to right,transparent,var(--border),transparent); }
+    .div-dot  { width:5px; height:5px; background:var(--purple); border-radius:50%; box-shadow:0 0 8px var(--purple); }
 
-/* ═══ SECTIONS ════════════════════ */
-main{position:relative;z-index:3}
-.sec{padding:6rem 2.5rem;max-width:1000px;margin:0 auto;position:relative}
-.sec-hr{
-  border:none;height:1px;
-  background:linear-gradient(90deg,transparent,rgba(255,45,107,.12),rgba(192,38,211,.12),transparent);
-}
+    /* ═══════════════════════════════
+       PROJECTS
+    ═══════════════════════════════ */
+    #projects {
+      padding:20px 24px 80px;
+      max-width:980px; margin:0 auto;
+    }
+    .sec-head { text-align:center; margin-bottom:48px; }
+    .sec-eye {
+      font-family:'JetBrains Mono',monospace; font-size:.72rem;
+      color:var(--purple); letter-spacing:4px; text-transform:uppercase; margin-bottom:10px;
+    }
+    .sec-title {
+      font-family:'Orbitron',monospace; font-size:clamp(1.4rem,4vw,2.4rem); font-weight:700;
+      background:linear-gradient(135deg,var(--text),var(--muted));
+      -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text;
+    }
 
-/* section label */
-.sec-eye{
-  font-family:'JetBrains Mono',monospace;font-size:.57rem;
-  letter-spacing:.28em;text-transform:uppercase;
-  margin-bottom:.7rem;
-  display:flex;align-items:center;gap:.7rem;
-}
-.sec-eye.rose{color:var(--rose)}
-.sec-eye.purple{color:var(--magenta)}
-.sec-eye::before{
-  content:'';width:18px;height:1px;
-  background:linear-gradient(90deg,currentColor,transparent);
-}
-.sec-title{
-  font-family:'DM Serif Display',serif;
-  font-size:clamp(1.6rem,3vw,2.6rem);
-  font-style:italic;color:var(--white);margin-bottom:2.8rem;line-height:1.25;
-}
-.sec-title .rose{
-  color:var(--pink);
-  text-shadow:0 0 24px rgba(255,110,180,.5);
-}
-.sec-title .pur{
-  color:var(--magenta);
-  text-shadow:0 0 24px rgba(232,121,249,.4);
-}
+    .proj-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(380px,1fr)); gap:22px; }
 
-/* ═══ PHOTOGRAPHY ═════════════════ */
-#photography{background:var(--bg)}
+    .pcard {
+      background:var(--card);
+      border:1px solid var(--border); border-radius:20px;
+      padding:34px; position:relative; overflow:hidden;
+      transition:all .4s cubic-bezier(.4,0,.2,1);
+    }
+    .pcard::before {
+      content:''; position:absolute; top:0; left:0; right:0; height:1px;
+      background:linear-gradient(90deg,transparent,var(--purple),transparent);
+      opacity:0; transition:opacity .4s;
+    }
+    .pcard:hover { transform:translateY(-7px); border-color:rgba(139,92,246,.42); box-shadow:0 22px 60px rgba(139,92,246,.14); }
+    .pcard:hover::before { opacity:1; }
+    .pcard.upcoming { border-color:rgba(236,72,153,.12); }
+    .pcard.upcoming:hover { border-color:rgba(236,72,153,.4); box-shadow:0 22px 60px rgba(236,72,153,.1); }
+    .pcard.upcoming::before { background:linear-gradient(90deg,transparent,var(--pink),transparent); }
 
-/* floating code snippet decorations */
-.code-deco{
-  font-family:'JetBrains Mono',monospace;font-size:.6rem;
-  color:rgba(255,45,107,.2);line-height:1.8;
-  position:absolute;right:0;top:2rem;
-  text-align:right;pointer-events:none;
-  animation:codeFade 6s ease-in-out infinite;
-}
-@keyframes codeFade{0%,100%{opacity:.3}50%{opacity:.7}}
+    /* card corner tag */
+    .pcard .corner-tag {
+      position:absolute; top:0; right:0;
+      padding:5px 16px;
+      font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:1px;
+      border-bottom-left-radius:12px; border-top-right-radius:20px;
+    }
+    .corner-tag.live     { background:rgba(16,185,129,.15); color:var(--green);  border-bottom:1px solid rgba(16,185,129,.3); border-left:1px solid rgba(16,185,129,.3); }
+    .corner-tag.upcoming { background:rgba(236,72,153,.12); color:var(--pink);   border-bottom:1px solid rgba(236,72,153,.3); border-left:1px solid rgba(236,72,153,.3); }
 
-.photo-grid{
-  display:grid;
-  grid-template-columns:1.5fr 1fr 1fr;
-  grid-template-rows:auto auto;
-  gap:.6rem;
-}
-.pcard{
-  background:var(--bg3);
-  border:1px solid rgba(255,45,107,.08);
-  position:relative;overflow:hidden;cursor:none;
-  transition:transform .35s cubic-bezier(.25,.46,.45,.94),border-color .3s,box-shadow .3s;
-}
-.pcard::before{
-  content:'';position:absolute;inset:0;z-index:2;
-  background:linear-gradient(to top,rgba(5,2,10,.75) 0%,transparent 55%);
-}
-.pcard::after{
-  content:'';position:absolute;inset:0;z-index:1;
-  background:linear-gradient(135deg,rgba(255,45,107,.05),rgba(192,38,211,.05));
-  opacity:0;transition:opacity .3s;
-}
-.pcard:hover{
-  border-color:rgba(255,110,180,.35);
-  transform:scale(1.018) translateZ(0);
-  box-shadow:0 0 40px rgba(255,45,107,.12);
-}
-.pcard:hover::after{opacity:1}
-/* shimmer bar on hover */
-.pcard .shimmer{
-  position:absolute;top:0;left:0;right:0;height:2px;z-index:3;
-  background:linear-gradient(90deg,var(--rose),var(--pink),var(--purple),var(--rose));
-  background-size:300% 100%;
-  transform:scaleX(0);transform-origin:left;
-  transition:transform .4s;
-  animation:shimBar 2s linear infinite paused;
-}
-.pcard:hover .shimmer{transform:scaleX(1);animation-play-state:running}
-@keyframes shimBar{0%{background-position:0% 0}100%{background-position:300% 0}}
+    .card-status { display:flex; align-items:center; gap:8px; margin-bottom:22px; }
+    .sdot { width:8px; height:8px; border-radius:50%; }
+    .sdot.live    { background:var(--green); animation:pg 2s infinite; }
+    .sdot.upcoming{ background:var(--pink);  animation:pp 2s infinite; }
+    @keyframes pg { 0%,100%{box-shadow:0 0 5px var(--green);}50%{box-shadow:0 0 14px var(--green),0 0 24px rgba(16,185,129,.5);} }
+    @keyframes pp { 0%,100%{box-shadow:0 0 5px var(--pink);}50%{box-shadow:0 0 14px var(--pink),0 0 24px rgba(236,72,153,.5);} }
+    .slabel { font-family:'JetBrains Mono',monospace; font-size:.68rem; letter-spacing:2px; text-transform:uppercase; }
+    .slabel.live    { color:var(--green); }
+    .slabel.upcoming{ color:var(--pink); }
 
-.pcard:nth-child(1){grid-column:1;grid-row:1/3;min-height:440px}
-.pcard:nth-child(2),.pcard:nth-child(3){min-height:205px}
-.pcard:nth-child(4),.pcard:nth-child(5){min-height:215px}
+    .rom-icon {
+      width:52px; height:52px; border-radius:13px;
+      display:flex; align-items:center; justify-content:center;
+      font-size:1.7rem; margin-bottom:18px;
+    }
+    .rom-icon.cr  { background:rgba(139,92,246,.12); border:1px solid rgba(139,92,246,.28); }
+    .rom-icon.evox{ background:rgba(236,72,153,.12); border:1px solid rgba(236,72,153,.28); }
 
-.pbg{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
-.pbg svg{width:55%;height:55%;opacity:.5}
+    .pcard h3 {
+      font-family:'Orbitron',monospace; font-size:1.35rem; font-weight:700;
+      margin-bottom:6px; color:var(--text);
+    }
+    .p-device  { font-family:'JetBrains Mono',monospace; font-size:.78rem; color:var(--purple); margin-bottom:3px; }
+    .p-code    { font-family:'JetBrains Mono',monospace; font-size:.72rem; color:var(--subtle); margin-bottom:16px; }
+    .p-code::before { content:'('; } .p-code::after { content:')'; }
+    .p-desc    { color:var(--muted); font-size:.88rem; line-height:1.65; margin-bottom:22px; }
 
-/* different gradient moods */
-.pcard:nth-child(1) .pbg{background:linear-gradient(150deg,#14030f 0%,#2a0520 50%,#0a0214 100%)}
-.pcard:nth-child(2) .pbg{background:linear-gradient(140deg,#0a0210 0%,#1a0430 60%,#0d0218 100%)}
-.pcard:nth-child(3) .pbg{background:linear-gradient(130deg,#120210 0%,#220430 70%,#14021a 100%)}
-.pcard:nth-child(4) .pbg{background:linear-gradient(120deg,#08020e 0%,#180326 60%,#0f0218 100%)}
-.pcard:nth-child(5) .pbg{background:linear-gradient(160deg,#100212 0%,#200428 60%,#0c0214 100%)}
+    .chips { display:flex; flex-wrap:wrap; gap:7px; margin-bottom:26px; }
+    .chip {
+      padding:4px 11px; border-radius:6px;
+      font-family:'JetBrains Mono',monospace; font-size:.68rem;
+    }
+    .chip.a  { background:rgba(16,185,129,.1);  color:var(--green); border:1px solid rgba(16,185,129,.2); }
+    .chip.r  { background:rgba(139,92,246,.1);  color:var(--purple);border:1px solid rgba(139,92,246,.2); }
+    .chip.s  { background:rgba(236,72,153,.1);  color:var(--pink);  border:1px solid rgba(236,72,153,.2); }
 
-.plabel{
-  position:absolute;bottom:.9rem;left:1rem;z-index:4;
-  font-family:'DM Serif Display',serif;font-size:.8rem;font-style:italic;
-  color:var(--white);opacity:.85;
-}
-.ptag{
-  position:absolute;top:.7rem;right:.7rem;z-index:4;
-  font-family:'JetBrains Mono',monospace;font-size:.5rem;
-  color:var(--pink);letter-spacing:.1em;
-  background:rgba(5,2,10,.6);padding:.2rem .45rem;
-  backdrop-filter:blur(6px);
-  border:1px solid rgba(255,110,180,.15);
-}
+    .plink {
+      display:inline-flex; align-items:center; gap:8px;
+      padding:9px 20px;
+      border:1px solid rgba(139,92,246,.4); border-radius:10px;
+      background:rgba(139,92,246,.08);
+      color:var(--purple); text-decoration:none;
+      font-family:'JetBrains Mono',monospace; font-size:.78rem;
+      transition:all .3s; cursor:pointer;
+    }
+    .plink:hover { background:rgba(139,92,246,.18); color:var(--text); }
+    .plink.off {
+      opacity:.55; cursor:default;
+      border-color:rgba(236,72,153,.3); color:var(--pink);
+      background:rgba(236,72,153,.06);
+    }
 
-.photo-quote{
-  margin:3rem 0 0;padding:2rem 2.5rem;
-  border-left:2px solid var(--rose);
-  background:rgba(255,45,107,.04);
-  backdrop-filter:blur(10px);
-  position:relative;overflow:hidden;
-}
-.photo-quote::before{
-  content:'"';
-  position:absolute;top:-1rem;left:1rem;
-  font-family:'DM Serif Display',serif;font-size:8rem;
-  color:rgba(255,45,107,.06);line-height:1;
-  pointer-events:none;
-}
-.photo-quote p{
-  font-family:'DM Serif Display',serif;font-size:1.15rem;font-style:italic;
-  color:rgba(248,240,255,.72);line-height:1.75;
-}
-.photo-quote cite{
-  display:block;margin-top:.8rem;
-  font-family:'JetBrains Mono',monospace;font-size:.58rem;
-  color:var(--rose);letter-spacing:.12em;font-style:normal;
-}
+    /* ═══════════════════════════════
+       GITHUB
+    ═══════════════════════════════ */
+    #github { padding:40px 24px 90px; text-align:center; }
+    .gh-inner {
+      max-width:580px; margin:0 auto;
+      background:var(--glass); border:1px solid var(--border); border-radius:24px;
+      padding:60px 44px; backdrop-filter:blur(22px);
+      position:relative; overflow:hidden;
+    }
+    .gh-inner::after {
+      content:''; position:absolute; inset:0;
+      background:radial-gradient(ellipse at top,rgba(139,92,246,.07) 0%,transparent 70%);
+      pointer-events:none;
+    }
+    .gh-ico {
+      width:58px; height:58px; margin:0 auto 18px;
+      background:var(--card); border:1px solid var(--border); border-radius:16px;
+      display:flex; align-items:center; justify-content:center; font-size:1.75rem;
+    }
+    .gh-inner h2 {
+      font-family:'Orbitron',monospace; font-size:1.55rem; margin-bottom:10px;
+    }
+    .gh-inner p { color:var(--muted); font-size:.88rem; margin-bottom:30px; }
+    .gh-btn {
+      display:inline-flex; align-items:center; gap:10px;
+      padding:13px 36px; border-radius:12px;
+      background:linear-gradient(135deg,var(--violet),var(--purple));
+      color:#fff; text-decoration:none;
+      font-family:'JetBrains Mono',monospace; font-size:.88rem; font-weight:500;
+      transition:all .3s;
+      box-shadow:0 10px 28px rgba(124,58,237,.3);
+    }
+    .gh-btn:hover { transform:translateY(-3px); box-shadow:0 18px 40px rgba(124,58,237,.5); }
 
-/* ═══ DEVELOPMENT ═════════════════ */
-#development{
-  background:linear-gradient(to bottom,var(--bg),var(--bg2));
-  position:relative;overflow:hidden;
-}
-/* full-section floating code bg */
-.sec-code-bg{
-  position:absolute;inset:0;pointer-events:none;
-  font-family:'JetBrains Mono',monospace;font-size:.65rem;
-  line-height:1.9;color:rgba(192,38,211,.08);
-  overflow:hidden;white-space:pre;
-  padding:6rem 2.5rem;
-  animation:codeScroll 40s linear infinite;
-}
-@keyframes codeScroll{from{background-position:0 0}to{transform:translateY(-50%)}}
+    /* ═══════════════════════════════
+       FOOTER
+    ═══════════════════════════════ */
+    footer {
+      text-align:center; padding:36px 24px;
+      color:var(--subtle); font-family:'JetBrains Mono',monospace; font-size:.72rem;
+      border-top:1px solid var(--border);
+    }
+    footer .pk { color:var(--pink); }
 
-/* terminal */
-.terminal{
-  background:rgba(5,2,10,.9);
-  border:1px solid rgba(255,45,107,.15);
-  overflow:hidden;margin-bottom:2rem;
-  box-shadow:0 0 0 1px rgba(192,38,211,.05),
-             0 20px 60px rgba(0,0,0,.7),
-             0 0 60px rgba(255,45,107,.04);
-  position:relative;
-}
-.terminal::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,var(--rose),var(--purple),var(--pink));
-  animation:termGlow 3s ease-in-out infinite;
-}
-@keyframes termGlow{
-  0%,100%{box-shadow:none}
-  50%{box-shadow:0 0 20px rgba(255,45,107,.5)}
-}
-.term-bar{
-  background:rgba(20,5,20,.9);
-  padding:.55rem 1rem;
-  display:flex;align-items:center;gap:.5rem;
-  border-bottom:1px solid rgba(255,45,107,.08);
-}
-.tdot{width:10px;height:10px;border-radius:50%}
-.tdot:nth-child(1){background:#ff5f57}
-.tdot:nth-child(2){background:#febc2e}
-.tdot:nth-child(3){background:#28c840}
-.term-label{
-  font-family:'JetBrains Mono',monospace;font-size:.56rem;
-  color:rgba(255,45,107,.35);margin-left:.8rem;letter-spacing:.08em;
-}
-.term-body{
-  padding:1.4rem 1.5rem;
-  font-family:'JetBrains Mono',monospace;font-size:.73rem;
-  line-height:2;
-}
-.tl{display:block}
-.tp{color:rgba(255,45,107,.35)}
-.tc{color:rgba(248,240,255,.85)}
-.to{color:rgba(192,38,211,.55);padding-left:1.2rem}
-.th{color:var(--rose);font-weight:700}
-.tm{color:var(--magenta)}
-.tw{color:rgba(248,240,255,.6)}
-.tb{
-  display:inline-block;width:7px;height:.85em;
-  background:var(--rose);vertical-align:middle;
-  box-shadow:0 0 8px var(--rose);
-  animation:blink 1s step-end infinite;
-}
+    /* ═══════════════════════════════
+       MUSIC PLAYER
+    ═══════════════════════════════ */
+    .music-pl {
+      position:fixed; bottom:28px; right:28px; z-index:300;
+      display:flex; align-items:center; gap:10px;
+      background:rgba(7,7,26,.92);
+      border:1px solid var(--border); border-radius:100px;
+      padding:9px 16px 9px 9px;
+      backdrop-filter:blur(24px);
+      box-shadow:0 8px 32px rgba(0,0,0,.35);
+      transition:all .3s;
+    }
+    .music-pl:hover { border-color:rgba(139,92,246,.35); }
 
-/* currently maintaining badge */
-.device-badge{
-  display:inline-flex;align-items:center;gap:1rem;
-  padding:1rem 1.5rem;margin-bottom:2rem;
-  background:rgba(255,45,107,.05);
-  border:1px solid rgba(255,45,107,.2);
-  border-left:3px solid var(--rose);
-  backdrop-filter:blur(12px);
-  position:relative;overflow:hidden;
-}
-.device-badge::before{
-  content:'';position:absolute;inset:0;
-  background:linear-gradient(90deg,rgba(255,45,107,.04),transparent);
-}
-.device-badge-dot{
-  width:8px;height:8px;border-radius:50%;
-  background:var(--rose);
-  box-shadow:0 0 12px var(--rose);
-  animation:dotPulse 1.5s ease-in-out infinite;
-  flex-shrink:0;
-}
-@keyframes dotPulse{0%,100%{box-shadow:0 0 6px var(--rose)}50%{box-shadow:0 0 20px var(--rose),0 0 40px rgba(255,45,107,.3)}}
-.device-badge-text{
-  font-family:'JetBrains Mono',monospace;font-size:.7rem;
-  color:var(--dim);line-height:1.5;
-}
-.device-badge-text strong{color:var(--white)}
-.device-badge-text .device-name{
-  color:var(--pink);
-  text-shadow:0 0 12px rgba(255,110,180,.4);
-}
+    .m-btn {
+      width:34px; height:34px; border-radius:50%;
+      border:none; background:linear-gradient(135deg,var(--violet),var(--purple));
+      cursor:pointer; display:flex; align-items:center; justify-content:center;
+      font-size:.95rem; flex-shrink:0;
+      transition:all .3s; box-shadow:0 0 12px rgba(139,92,246,.4);
+    }
+    .m-btn:hover { transform:scale(1.12); box-shadow:0 0 22px var(--gp); }
 
-/* device showcase — photo + info, color-treated to match the rest of the site */
-.device-showcase{
-  display:grid;grid-template-columns:300px 1fr;gap:1.8rem;
-  align-items:center;margin-bottom:2rem;
-}
-.device-art{
-  position:relative;aspect-ratio:16/9;
-}
-.device-art-glow{
-  position:absolute;inset:-18%;z-index:0;
-  background:radial-gradient(circle at 50% 40%,rgba(255,45,107,.22),transparent 65%);
-  pointer-events:none;
-}
-.device-art-frame{
-  position:relative;z-index:1;width:100%;height:100%;
-  background:var(--bg3);
-  border:1px solid rgba(255,45,107,.15);
-  clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));
-  overflow:hidden;
-}
-.device-photo{
-  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 40%;
-  filter:grayscale(.55) contrast(1.15) brightness(.72) saturate(1.3);
-}
-.device-photo-tint{
-  position:absolute;inset:0;
-  background:linear-gradient(135deg,rgba(255,45,107,.45),rgba(124,58,237,.5));
-  mix-blend-mode:color;
-}
-.device-photo-vignette{
-  position:absolute;inset:0;
-  background:
-    linear-gradient(to top,rgba(5,2,10,.85) 0%,transparent 55%),
-    radial-gradient(ellipse at 50% 45%,transparent 50%,rgba(5,2,10,.6) 100%);
-}
-.device-art-tag{
-  position:absolute;bottom:.7rem;left:50%;transform:translateX(-50%);
-  display:flex;align-items:center;gap:.5rem;
-  font-family:'JetBrains Mono',monospace;font-size:.56rem;
-  letter-spacing:.1em;color:var(--pink);
-  background:rgba(5,2,10,.7);padding:.3rem .6rem;
-  border:1px solid rgba(255,110,180,.2);
-  backdrop-filter:blur(6px);z-index:2;
-}
-.device-info{display:flex;flex-direction:column;gap:1rem}
-.device-specs{display:flex;flex-wrap:wrap;gap:.4rem}
+    .m-info { display:flex; flex-direction:column; }
+    .m-title    { font-family:'JetBrains Mono',monospace; font-size:.68rem; color:var(--text); white-space:nowrap; }
+    .m-subtitle { font-family:'JetBrains Mono',monospace; font-size:.58rem; color:var(--subtle); }
 
-/* rom cards */
-.rom-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
-.rom-card{
-  background:rgba(10,4,20,.7);
-  border:1px solid rgba(255,45,107,.09);
-  padding:1.6rem;position:relative;overflow:hidden;cursor:none;
-  clip-path:polygon(0 0,calc(100% - 12px) 0,100% 12px,100% 100%,12px 100%,0 calc(100% - 12px));
-  transition:border-color .3s,transform .25s cubic-bezier(.25,.46,.45,.94),box-shadow .3s;
-}
-.rom-card::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,var(--rose),var(--purple));
-  opacity:0;transition:opacity .3s;
-}
-.rom-card::after{
-  content:'';position:absolute;bottom:-80px;right:-60px;
-  width:160px;height:160px;
-  background:radial-gradient(circle,rgba(255,45,107,.06),transparent 70%);
-  pointer-events:none;
-}
-.rom-card:hover{
-  border-color:rgba(255,45,107,.3);
-  transform:translateY(-5px);
-  box-shadow:0 14px 50px rgba(0,0,0,.6),0 0 30px rgba(255,45,107,.07);
-}
-.rom-card:hover::before{opacity:1}
-/* glow spotlight */
-.rom-card:hover{
-  background:radial-gradient(circle at var(--mx,50%) var(--my,50%),rgba(255,45,107,.08) 0%,rgba(10,4,20,.7) 60%);
-}
-.rom-tag{
-  font-family:'JetBrains Mono',monospace;font-size:.52rem;
-  color:var(--rose);letter-spacing:.15em;text-transform:uppercase;
-  margin-bottom:.8rem;display:flex;align-items:center;gap:.5rem;
-}
-.rom-tag::before{content:'>';color:rgba(255,45,107,.4)}
-.rom-title{
-  font-family:'JetBrains Mono',monospace;font-size:.88rem;
-  font-weight:700;color:var(--white);margin-bottom:.7rem;
-}
-.rom-desc{
-  font-family:'JetBrains Mono',monospace;font-size:.68rem;
-  color:rgba(192,38,211,.55);line-height:1.85;margin-bottom:1.2rem;
-}
-.rom-chips{display:flex;flex-wrap:wrap;gap:.35rem}
-.chip{
-  font-family:'JetBrains Mono',monospace;font-size:.52rem;
-  padding:.22rem .55rem;letter-spacing:.05em;
-  background:rgba(255,45,107,.06);
-  border:1px solid rgba(255,45,107,.14);
-  color:rgba(255,110,180,.7);
-  transition:background .2s,border-color .2s;
-}
-.rom-card:hover .chip{background:rgba(255,45,107,.1);border-color:rgba(255,45,107,.25)}
+    /* Amber-golden bars */
+    .m-bars { display:flex; gap:2px; align-items:flex-end; height:14px; margin-left:2px; }
+    .mbar {
+      width:3px; background:linear-gradient(to top,#f59e0b,#fcd34d);
+      border-radius:2px; animation:mba .9s ease-in-out infinite alternate;
+    }
+    .mbar:nth-child(1){animation-delay:0s;height:6px}
+    .mbar:nth-child(2){animation-delay:.22s;height:10px}
+    .mbar:nth-child(3){animation-delay:.1s;height:5px}
+    .mbar:nth-child(4){animation-delay:.35s;height:12px}
+    .mbar:nth-child(5){animation-delay:.18s;height:7px}
+    @keyframes mba { from{height:3px;opacity:.4} to{height:14px;opacity:1} }
+    .music-pl.paused .mbar { animation-play-state:paused; }
 
-/* ═══ SKILLS ══════════════════════ */
-#skills{background:var(--bg)}
-.skills-grid{display:grid;grid-template-columns:1fr 1fr;gap:3.5rem}
-.sk-col-title{
-  font-family:'JetBrains Mono',monospace;font-size:.58rem;
-  letter-spacing:.2em;text-transform:uppercase;
-  margin-bottom:1.5rem;padding-bottom:.75rem;
-  border-bottom:1px solid rgba(255,45,107,.15);
-  color:var(--pink);
-}
-.sk-row{display:flex;align-items:center;gap:1rem;margin-bottom:1.1rem}
-.sk-label{
-  font-family:'JetBrains Mono',monospace;font-size:.67rem;
-  color:var(--white);width:115px;flex-shrink:0;
-}
-.sk-track{
-  flex:1;height:2px;background:rgba(255,255,255,.05);
-  position:relative;overflow:hidden;
-}
-.sk-fill{
-  height:100%;width:0%;
-  transition:width 1.4s cubic-bezier(.25,.46,.45,.94);
-  background:linear-gradient(90deg,var(--rose),var(--pink),var(--purple));
-  box-shadow:0 0 10px rgba(255,45,107,.5);
-}
-.sk-pct{
-  font-family:'JetBrains Mono',monospace;font-size:.56rem;
-  color:var(--dim);width:30px;text-align:right;
-}
+    /* ── Animations ── */
+    @keyframes fadeUp {
+      from { opacity:0; transform:translateY(22px); }
+      to   { opacity:1; transform:translateY(0);    }
+    }
+    .reveal {
+      opacity:0; transform:translateY(32px);
+      transition:opacity .7s ease, transform .7s ease;
+    }
+    .reveal.vis { opacity:1; transform:translateY(0); }
 
-/* ═══ ABOUT & CONTACT ═════════════ */
-#about{
-  background:linear-gradient(to bottom,var(--bg2),var(--bg));
-  position:relative;overflow:hidden;
-}
-/* floating code in bg */
-.about-code-bg{
-  position:absolute;right:0;top:0;bottom:0;width:45%;
-  font-family:'JetBrains Mono',monospace;font-size:.58rem;
-  color:rgba(255,45,107,.04);line-height:1.8;
-  overflow:hidden;padding:6rem 1rem;
-  pointer-events:none;white-space:pre;
-}
-
-.about-grid{display:grid;grid-template-columns:1fr 1fr;gap:4rem;align-items:start}
-
-.about-text .greeting{
-  font-family:'DM Serif Display',serif;
-  font-size:clamp(1.7rem,3vw,2.4rem);
-  font-style:italic;color:var(--white);
-  display:block;margin-bottom:1.3rem;
-}
-.about-text .greeting .r{
-  color:var(--pink);
-  text-shadow:0 0 20px rgba(255,110,180,.5);
-}
-.about-text p{
-  font-size:.86rem;color:rgba(248,240,255,.6);
-  margin-bottom:1.25rem;line-height:1.95;
-}
-.about-text p strong{color:var(--white);font-weight:500}
-
-/* fun note */
-.fun-note{
-  margin-top:1.8rem;
-  padding:1.2rem 1.4rem;
-  background:rgba(192,38,211,.06);
-  border:1px solid rgba(192,38,211,.15);
-  border-left:3px solid var(--purple);
-  font-family:'JetBrains Mono',monospace;
-  font-size:.7rem;line-height:1.85;
-  color:rgba(232,121,249,.7);
-  position:relative;
-}
-.fun-note::before{
-  content:'// note';
-  display:block;color:var(--magenta);
-  font-size:.58rem;letter-spacing:.1em;margin-bottom:.4rem;
-}
-
-/* contact glass */
-.contact-glass{
-  background:rgba(10,4,20,.6);
-  border:1px solid rgba(255,45,107,.12);
-  padding:2.2rem;
-  backdrop-filter:blur(16px);
-  box-shadow:0 20px 60px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.03);
-  position:relative;overflow:hidden;
-}
-.contact-glass::before{
-  content:'';position:absolute;inset:0;
-  background:radial-gradient(ellipse 80% 60% at 50% 100%,rgba(255,45,107,.08),transparent 70%);
-  pointer-events:none;
-}
-.contact-glass h3{
-  font-family:'DM Serif Display',serif;
-  font-size:1.4rem;font-style:italic;
-  color:var(--white);margin-bottom:.5rem;
-}
-.contact-glass p{
-  font-family:'JetBrains Mono',monospace;
-  font-size:.67rem;color:var(--dim);
-  margin-bottom:1.8rem;line-height:1.75;
-}
-.clinks{display:flex;flex-direction:column;gap:.45rem}
-.clink{
-  font-family:'JetBrains Mono',monospace;font-size:.69rem;
-  color:var(--dim);text-decoration:none;
-  display:flex;align-items:center;gap:.7rem;
-  padding:.62rem .9rem;
-  background:rgba(255,255,255,.02);
-  border:1px solid rgba(255,45,107,.07);
-  transition:color .2s,border-color .2s,background .2s,transform .2s,box-shadow .2s;
-  letter-spacing:.05em;
-}
-.clink:hover{
-  color:var(--pink);border-color:rgba(255,110,180,.3);
-  background:rgba(255,45,107,.05);
-  transform:translateX(5px);
-  box-shadow:0 4px 20px rgba(255,45,107,.1);
-}
-.clink .ci{font-size:.9rem;width:18px;text-align:center}
-
-/* ═══ FOOTER ══════════════════════ */
-footer{
-  background:var(--bg);
-  border-top:1px solid rgba(255,45,107,.08);
-  padding:1.8rem 2.5rem;
-  display:flex;align-items:center;justify-content:space-between;
-  position:relative;z-index:3;
-}
-footer::before{
-  content:'';position:absolute;top:0;left:0;right:0;height:1px;
-  background:linear-gradient(90deg,transparent,var(--rose),var(--purple),var(--pink),transparent);
-  opacity:.2;
-}
-.ft-name{
-  font-family:'DM Serif Display',serif;
-  font-size:.95rem;font-style:italic;color:var(--white);
-}
-.ft-code{
-  font-family:'JetBrains Mono',monospace;font-size:.57rem;
-  color:var(--dim);letter-spacing:.08em;
-}
-.ft-code .r{color:var(--rose)}
-.ft-code .p{color:var(--magenta)}
-
-/* ═══ REVEAL ══════════════════════ */
-.reveal{
-  opacity:0;transform:translateY(26px);
-  transition:opacity .75s cubic-bezier(.25,.46,.45,.94),
-             transform .75s cubic-bezier(.25,.46,.45,.94);
-}
-.reveal.left{transform:translateX(-26px)}
-.reveal.right{transform:translateX(26px)}
-.reveal.visible{opacity:1;transform:none}
-.d1{transition-delay:.1s}.d2{transition-delay:.2s}
-.d3{transition-delay:.3s}.d4{transition-delay:.4s}
-
-/* ═══ SHARED ANIMS ════════════════ */
-@keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
-@keyframes blink{50%{opacity:0}}
-
-/* ═══ GLITCH TEXT ═════════════════ */
-.glitch{position:relative}
-.glitch::before,.glitch::after{
-  content:attr(data-text);
-  position:absolute;top:0;left:0;
-  width:100%;height:100%;
-  font-family:inherit;font-size:inherit;
-  font-style:inherit;font-weight:inherit;
-  background:inherit;-webkit-background-clip:inherit;background-clip:inherit;
-}
-.glitch::before{
-  color:var(--rose);
-  clip-path:polygon(0 30%,100% 30%,100% 50%,0 50%);
-  animation:glitch1 4s infinite;left:2px;
-  -webkit-text-fill-color:var(--rose);
-}
-.glitch::after{
-  color:var(--purple);
-  clip-path:polygon(0 60%,100% 60%,100% 75%,0 75%);
-  animation:glitch2 4s infinite;left:-2px;
-  -webkit-text-fill-color:var(--purple);
-}
-@keyframes glitch1{
-  0%,85%,100%{transform:translate(0);opacity:0}
-  86%{transform:translate(-3px,1px);opacity:.8}
-  88%{transform:translate(2px,-1px);opacity:.8}
-  90%{transform:translate(0);opacity:0}
-}
-@keyframes glitch2{
-  0%,88%,100%{transform:translate(0);opacity:0}
-  89%{transform:translate(3px,-1px);opacity:.8}
-  91%{transform:translate(-1px,1px);opacity:.8}
-  93%{transform:translate(0);opacity:0}
-}
-
-/* ═══ RESPONSIVE ══════════════════ */
-@media(max-width:768px){
-  #hero{grid-template-columns:1fr;grid-template-rows:1fr 1fr}
-  .hero-center{display:none}
-  .hero-photo,.hero-dev{padding:5.5rem 1.8rem 3rem}
-  .photo-grid{grid-template-columns:1fr 1fr}
-  .pcard:nth-child(1){grid-column:1/3;min-height:250px}
-  .rom-grid,.about-grid,.skills-grid{grid-template-columns:1fr}
-  .device-showcase{grid-template-columns:1fr;text-align:center}
-  .device-art{max-width:320px;width:100%;margin:0 auto}
-  .sec{padding:4rem 1.5rem}
-  nav{padding:.8rem 1.2rem}
-  .nav-links{gap:1rem}
-  footer{flex-direction:column;gap:.5rem;text-align:center}
-  .about-code-bg{display:none}
-}
-@media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation:none!important;transition:none!important}
-  .reveal{opacity:1;transform:none}
-}
-</style>
+    /* ── Responsive ── */
+    @media(max-width:768px){
+      nav { padding:14px 22px; }
+      .nav-links { gap:20px; }
+      .about-wrap { flex-direction:column; text-align:center; padding:34px 24px; gap:34px; }
+      .about-tags { justify-content:center; }
+      .proj-grid  { grid-template-columns:1fr; }
+      .music-pl   { bottom:18px; right:18px; }
+    }
+    @media(max-width:480px){
+      .hero-badges { gap:7px; }
+      .badge { padding:5px 12px; font-size:.72rem; }
+    }
+  </style>
 </head>
 <body>
 
-<div id="aurora">
-  <div class="ablob"></div><div class="ablob"></div><div class="ablob"></div>
-</div>
-<canvas id="code-rain"></canvas>
-<div id="scanline"></div>
+  <!-- Canvas + Grid -->
+  <canvas id="sk"></canvas>
+  <div class="bg-grid"></div>
 
-<div id="cur"><div id="cur-inner"></div></div>
-<div id="cur-ring"></div>
-<canvas id="cur-trail"></canvas>
+  <!-- Custom cursor -->
+  <div id="cur"></div>
+  <div id="cur-ring"></div>
 
-<!-- NAV -->
-<nav>
-  <a class="nav-logo" href="#hero"><span class="r">M</span>init<span class="p">_</span></a>
-  <ul class="nav-links">
-    <li><a href="#photography">📷 shots</a></li>
-    <li><a href="#development">&lt;/&gt; roms</a></li>
-    <li><a href="#skills">skills</a></li>
-    <li><a href="#about">about</a></li>
-  </ul>
-</nav>
-
-<!-- ═══ HERO ═══ -->
-<section id="hero">
-
-  <div class="hero-photo">
-    <div class="h-eyebrow rose">📷 smartphone photographer</div>
-    <h1 class="h-photo-title">
-      Seeing the world<br>
-      through a<br>
-      <em>lens in your pocket</em>
-    </h1>
-    <p class="h-desc delay1">
-      Street light. Golden hour. Motion blur at midnight.
-      Every frame captured on a smartphone — proving the best camera
-      is the one you always carry.
-    </p>
-    <div style="display:flex;gap:1rem;flex-wrap:wrap">
-      <a class="btn-rose d1" href="#photography">view my shots</a>
+  <!-- NAV -->
+  <nav>
+    <div class="nav-logo">MinitxT</div>
+    <div class="nav-links">
+      <a href="#about">About</a>
+      <a href="#projects">Projects</a>
+      <a href="#github">GitHub</a>
     </div>
-  </div>
+  </nav>
 
-  <div class="hero-dev">
-    <canvas id="code-rain-hero"></canvas>
-    <div class="h-eyebrow purple" style="position:relative;z-index:2">⚙ aosp developer</div>
-    <h2 class="h-dev-title">
-      $ building<br>
-      custom ROMs<br>
-      from source<span class="blink"></span>
-    </h2>
-    <p class="h-desc delay2" style="font-family:'JetBrains Mono',monospace;font-size:.7rem;color:rgba(232,121,249,.5);position:relative;z-index:2">
-      // kernel patches · device trees · system mods<br>
-      // currently maintaining: <span style="color:var(--pink)">manaus</span><br>
-      // making old hardware feel brand new
-    </p>
-    <a class="btn-ghost-rose" href="#development" style="animation-delay:.72s">explore my builds</a>
-    <div class="hero-stats">
-      <div class="stat-item"><span class="stat-num">24+</span><span class="stat-lbl">projects</span></div>
-      <div class="stat-item"><span class="stat-num">3y</span><span class="stat-lbl">aosp dev</span></div>
-      <div class="stat-item"><span class="stat-num">∞</span><span class="stat-lbl">patience</span></div>
-    </div>
-  <div class="scroll-hint">scroll</div>
-</section>
+  <main>
 
-<!-- ═══ PHOTOGRAPHY ═══ -->
-<hr class="sec-hr"/>
-<section id="photography">
-  <div class="sec" style="position:relative">
-
-    <div class="code-deco">
-// import Camera from 'smartphone'<br>
-// const shot = Camera.capture({<br>
-//   mode: 'golden_hour',<br>
-//   eye: true,<br>
-// })<br>
-// shot.export('memory')
-    </div>
-
-    <div class="reveal">
-      <div class="sec-eye rose">📷 shots</div>
-      <h2 class="sec-title">The world through<br><span class="rose">smartphone glass</span></h2>
-    </div>
-
-    <div class="photo-grid reveal d1">
-      <div class="pcard">
-        <div class="shimmer"></div>
-        <div class="pbg">
-          <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="100" cy="72" r="38" stroke="#ff6eb4" stroke-width=".8" opacity=".7"/>
-            <circle cx="100" cy="72" r="20" fill="rgba(255,110,180,.12)"/>
-            <ellipse cx="100" cy="158" rx="58" ry="26" stroke="#ff6eb4" stroke-width=".8" opacity=".4"/>
-            <line x1="100" y1="110" x2="100" y2="132" stroke="#ff6eb4" stroke-width=".8" opacity=".5"/>
-            <circle cx="100" cy="72" r="8" fill="rgba(255,110,180,.35)"/>
-            <circle cx="100" cy="72" r="55" stroke="#ff2d6b" stroke-width=".4" stroke-dasharray="3 6" opacity=".3"/>
-          </svg>
-        </div>
-        <span class="ptag">PORTRAIT</span>
-        <span class="plabel">Golden hour</span>
-      </div>
-      <div class="pcard">
-        <div class="shimmer"></div>
-        <div class="pbg">
-          <svg viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <rect x="12" y="20" width="38" height="78" stroke="#c026d3" stroke-width=".8" opacity=".5"/>
-            <rect x="58" y="8" width="28" height="90" stroke="#c026d3" stroke-width=".8" opacity=".4"/>
-            <rect x="96" y="28" width="48" height="72" stroke="#c026d3" stroke-width=".8" opacity=".35"/>
-            <line x1="0" y1="98" x2="200" y2="98" stroke="#ff2d6b" stroke-width=".8" opacity=".4"/>
-            <circle cx="82" cy="84" r="4" fill="#ff2d6b" opacity=".6"/>
-            <circle cx="38" cy="84" r="2" fill="#c026d3" opacity=".5"/>
-          </svg>
-        </div>
-        <span class="ptag">STREET</span>
-        <span class="plabel">City after rain</span>
-      </div>
-      <div class="pcard">
-        <div class="shimmer"></div>
-        <div class="pbg">
-          <svg viewBox="0 0 200 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="40" cy="28" r="2" fill="#e879f9" opacity=".7"/>
-            <circle cx="105" cy="14" r="1.5" fill="#e879f9" opacity=".6"/>
-            <circle cx="162" cy="24" r="2" fill="#e879f9" opacity=".5"/>
-            <circle cx="78" cy="48" r="1" fill="#fff" opacity=".6"/>
-            <circle cx="145" cy="42" r="1.5" fill="#e879f9" opacity=".6"/>
-            <circle cx="180" cy="60" r="1" fill="#fff" opacity=".4"/>
-            <line x1="105" y1="8" x2="105" y2="80" stroke="#ff2d6b" stroke-width="8" opacity=".1"/>
-            <ellipse cx="105" cy="92" rx="55" ry="12" fill="rgba(255,45,107,.07)"/>
-          </svg>
-        </div>
-        <span class="ptag">NIGHT</span>
-        <span class="plabel">Light trails</span>
-      </div>
-      <div class="pcard">
-        <div class="shimmer"></div>
-        <div class="pbg">
-          <svg viewBox="0 0 200 140" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="100" cy="70" r="52" stroke="#ff6eb4" stroke-width=".6" opacity=".3"/>
-            <circle cx="100" cy="70" r="32" stroke="#ff6eb4" stroke-width=".8" opacity=".45"/>
-            <circle cx="100" cy="70" r="14" fill="rgba(255,110,180,.2)"/>
-            <line x1="48" y1="70" x2="86" y2="70" stroke="#ff2d6b" stroke-width=".8" opacity=".5"/>
-            <line x1="114" y1="70" x2="152" y2="70" stroke="#ff2d6b" stroke-width=".8" opacity=".5"/>
-            <line x1="100" y1="18" x2="100" y2="56" stroke="#ff2d6b" stroke-width=".8" opacity=".5"/>
-            <line x1="100" y1="84" x2="100" y2="122" stroke="#ff2d6b" stroke-width=".8" opacity=".5"/>
-          </svg>
-        </div>
-        <span class="ptag">MACRO</span>
-        <span class="plabel">Up close</span>
-      </div>
-      <div class="pcard">
-        <div class="shimmer"></div>
-        <div class="pbg">
-          <svg viewBox="0 0 200 140" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <line x1="100" y1="0" x2="0" y2="140" stroke="#7c3aed" stroke-width=".8" opacity=".5"/>
-            <line x1="100" y1="0" x2="200" y2="140" stroke="#7c3aed" stroke-width=".8" opacity=".5"/>
-            <line x1="100" y1="0" x2="48" y2="140" stroke="#7c3aed" stroke-width=".5" opacity=".3"/>
-            <line x1="100" y1="0" x2="152" y2="140" stroke="#7c3aed" stroke-width=".5" opacity=".3"/>
-            <circle cx="100" cy="2" r="3" fill="#ff2d6b" opacity=".7"/>
-          </svg>
-        </div>
-        <span class="ptag">ARCH</span>
-        <span class="plabel">Lines & space</span>
-      </div>
-    </div>
-
-    <blockquote class="photo-quote reveal d2">
-      <p>"The smartphone killed the excuse that you need expensive gear. It kept the one thing that always mattered — your eye."</p>
-      <cite>— Minit</cite>
-    </blockquote>
-  </div>
-</section>
-
-<!-- ═══ DEVELOPMENT ═══ -->
-<hr class="sec-hr"/>
-<section id="development">
-  <div class="sec-code-bg" aria-hidden="true">class DeviceTree extends AOSP {
-  constructor(codename) {
-    super('lineage-23.0')
-    this.device = codename
-    this.kernel = new Kernel({ clang: 18, lto: true })
-    this.hal = new HAL(['audio','camera','gps'])
-    this.selinux = SEPolicy.load('./sepolicy')
-  }
-  async build() {
-    await this.kernel.compile()
-    await this.hal.bind()
-    return this.makeZip()
-  }
-}
-// init device: manaus (moto edge 40 neo)
-const manaus = new DeviceTree('manaus')
-manaus.build().then(zip => flash(zip))
-
-function flash(zip) {
-  adb.reboot('recovery')
-  twrp.install(zip)
-  console.log('ROM flashed successfully ✓')
-}
-
-// kernel patches
-const patches = [
-  'cpu-governor-performance',
-  'io-scheduler-cfq',
-  'kernelsu-integration',
-  'battery-optimization',
-]
-patches.forEach(p => kernel.apply(p))
-</div>
-
-  <div class="sec">
-    <div class="reveal">
-      <div class="sec-eye purple">⚙ aosp · kernel · rom</div>
-      <h2 class="sec-title">Building Android<br>from <span class="pur">source</span></h2>
-    </div>
-
-    <!-- Currently Maintaining -->
-    <div class="device-showcase reveal d1">
-      <div class="device-art">
-        <div class="device-art-glow"></div>
-        <div class="device-art-frame">
-          <img class="device-photo" src="data:image/jpeg;base64,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" alt="manaus — Motorola Moto Edge 40 Neo, the device this ROM work targets" loading="lazy"/>
-          <div class="device-photo-tint"></div>
-          <div class="device-photo-vignette"></div>
-        </div>
-        <span class="device-art-tag"><span class="device-badge-dot"></span> manaus</span>
-      </div>
-      <div class="device-info">
-        <div class="device-badge-text">
-          <strong>Currently maintaining</strong><br>
-          <span class="device-name">manaus</span> — Motorola Moto Edge 40 Neo
-        </div>
-        <div class="device-specs">
-          <span class="chip">Android 16</span>
-          <span class="chip">LineageOS 23</span>
-          <span class="chip">Maintainer</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- Terminal -->
-    <div class="terminal reveal d2">
-      <div class="term-bar">
-        <div class="tdot"></div><div class="tdot"></div><div class="tdot"></div>
-        <span class="term-label">minit@aosp-build ~/android/lineage-23 [manaus]</span>
-      </div>
-      <div class="term-body">
-        <span class="tl"><span class="tp">$ </span><span class="tc">repo init -u https://github.com/LineageOS/android.git -b <span class="tm">lineage-23.0</span></span></span>
-        <span class="tl to">Fetching manifest ... <span class="th">done ✓</span></span>
-        <span class="tl"><span class="tp">$ </span><span class="tc">source build/envsetup.sh && breakfast <span class="tm">manaus</span></span></span>
-        <span class="tl to">including device/motorola/<span class="tm">manaus</span>/AndroidProducts.mk</span>
-        <span class="tl to">Moto Edge 40 Neo · Android 16 · <span class="th">ready ✓</span></span>
-        <span class="tl"><span class="tp">$ </span><span class="tc">brunch <span class="tm">manaus</span></span></span>
-        <span class="tl to">[ kernel ] compiling with Clang 18 + LTO ...</span>
-        <span class="tl to">[ system ] building AOSP base ...</span>
-        <span class="tl to">[ vendor ] patching motorola blobs ...</span>
-        <span class="tl to"><span class="th">lineage-23.0-*-manaus.zip</span> ready for flash <span class="th">✓</span></span>
-        <span class="tl"><span class="tp">$ </span><span class="tb"></span></span>
-      </div>
-    </div>
-
-    <!-- ROM Cards -->
-    <div class="rom-grid">
-      <div class="rom-card reveal d1">
-        <div class="rom-tag">active · manaus</div>
-        <div class="rom-title">LineageOS 23</div>
-        <p class="rom-desc">// LineageOS 23 for Moto Edge 40 Neo<br>// Android 16 · clean AOSP base<br>// quarterly security patches</p>
-        <div class="rom-chips">
-          <span class="chip">Android 16</span><span class="chip">LineageOS</span>
-          <span class="chip">manaus</span><span class="chip">OTA</span>
-        </div>
-      </div>
-      <div class="rom-card reveal d2">
-        <div class="rom-tag">kernel work</div>
-        <div class="rom-title">Custom Kernel</div>
-        <p class="rom-desc">// Performance-tuned kernel fork<br>// Clang 18 + LTO · CPU governor tweak<br>// KernelSU support baked in</p>
-        <div class="rom-chips">
-          <span class="chip">KernelSU</span><span class="chip">Clang 18</span>
-          <span class="chip">LTO</span><span class="chip">LLVM</span>
-        </div>
-      </div>
-      <div class="rom-card reveal d3">
-        <div class="rom-tag">privacy build</div>
-        <div class="rom-title">GApps-Free</div>
-        <p class="rom-desc">// Fully de-Googled AOSP build<br>// MicroG integration · F-Droid ready<br>// privacy-first daily driver</p>
-        <div class="rom-chips">
-          <span class="chip">MicroG</span><span class="chip">De-Googled</span>
-          <span class="chip">F-Droid</span><span class="chip">Privacy</span>
-        </div>
-      </div>
-      <div class="rom-card reveal d4">
-        <div class="rom-tag">device bringup</div>
-        <div class="rom-title">Device Tree</div>
-        <p class="rom-desc">// Device tree from scratch<br>// HAL configs · SEPolicy fixes<br>// vendor blob extraction & patching</p>
-        <div class="rom-chips">
-          <span class="chip">HAL</span><span class="chip">SELinux</span>
-          <span class="chip">Vendor Blobs</span><span class="chip">DTBO</span>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══ SKILLS ═══ -->
-<hr class="sec-hr"/>
-<section id="skills">
-  <div class="sec">
-    <div class="reveal">
-      <div class="sec-eye rose">two crafts</div>
-      <h2 class="sec-title">Skills across <span class="rose">lens</span> & <span class="pur">code</span></h2>
-    </div>
-    <div class="skills-grid reveal d1">
-      <div>
-        <div class="sk-col-title">📷 photography</div>
-        <div class="sk-row" data-pct="95"><span class="sk-label">Composition</span><div class="sk-track"><div class="sk-fill"></div></div><span class="sk-pct">95%</span></div>
-        <div class="sk-row" data-pct="92"><span class="sk-label">Mobile Camera</span><div class="sk-track"><div class="sk-fill"></div></div><span class="sk-pct">92%</span></div>
-        <div class="sk-row" data-pct="85"><span class="sk-label">Lightroom</span><div class="sk-track"><div class="sk-fill"></div></div><span class="sk-pct">85%</span></div>
-        <div class="sk-row" data-pct="82"><span class="sk-label">Night Mode</span><div class="sk-track"><div class="sk-fill"></div></div><span class="sk-pct">82%</span></div>
-        <div class="sk-row" data-pct="90"><span class="sk-label">Storytelling</span><div class="sk-track"><div class="sk-fill"></div></div><span class="sk-pct">90%</span></div>
-      </div>
-      <div>
-        <div class="sk-col-title">&lt;/&gt; aosp dev</div>
-        <div class="sk-row" data-pct="90"><span class="sk-label">AOSP Build</span><div class="sk-track"><div class="sk-fill"></div></div><span class="sk-pct">90%</span></div>
-        <div class="sk-row" data-pct="86"><span class="sk-label">Device Tree</span><div class="sk-track"><div class="sk-fill"></div></div><span class="sk-pct">86%</span></div>
-        <div class="sk-row" data-pct="80"><span class="sk-label">Kernel Dev</span><div class="sk-track"><div class="sk-fill"></div></div><span class="sk-pct">80%</span></div>
-        <div class="sk-row" data-pct="88"><span class="sk-label">Android HAL</span><div class="sk-track"><div class="sk-fill"></div></div><span class="sk-pct">88%</span></div>
-        <div class="sk-row" data-pct="75"><span class="sk-label">SELinux</span><div class="sk-track"><div class="sk-fill"></div></div><span class="sk-pct">75%</span></div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ═══ ABOUT & CONTACT ═══ -->
-<hr class="sec-hr"/>
-<section id="about">
-  <div class="about-code-bg" aria-hidden="true">class Minit {
-  name = 'Minit'
-  role = ['photographer','aosp-dev']
-  device = 'manaus'
-  motivation = 'fun'
-
-  shoot(moment) {
-    return Camera
-      .aim(moment)
-      .click()
-  }
-
-  buildROM(device) {
-    return AOSP
-      .sync()
-      .configure(device)
-      .compile()
-      .flash()
-  }
-
-  // why do i do this?
-  get reason() {
-    return 'just for the fun of it'
-  }
-}
-
-const me = new Minit()
-me.shoot('golden_hour')
-me.buildROM('manaus')
-  </div>
-  <div class="sec">
-    <div class="about-grid">
-      <div class="about-text reveal left">
-        <span class="greeting">Hey, I'm <span class="r">Minit</span></span>
-        <p>A developer who builds <strong>custom Android ROMs from AOSP source</strong> and a photographer who shoots everything on a smartphone — the same device I just flashed.</p>
-        <p>Currently <strong>maintaining manaus</strong> (Moto Edge 40 Neo) — working on device tree, kernel optimizations, and keeping it updated with latest security patches.</p>
-        <p>By evening I'm chasing <strong>golden hour light</strong>. By night I'm staring at build logs. Both feel the same kind of satisfying when they come together.</p>
-        <div class="fun-note">
-          I do all of this — the ROM building, the photography, the late-night kernel
-          debugging — purely <strong style="color:var(--magenta)">for fun</strong>. No contracts, no deadlines.
-          Just a person who loves making things work, look good, and feel alive.
-          Code and cameras are my playgrounds.
-        </div>
-      </div>
-      <div class="contact-glass reveal right">
-        <h3>Let's connect</h3>
-        <p>
-          // open for ROM collaboration<br>
-          // photography feedback welcome<br>
-          // or just a chat about Android internals
+    <!-- ══ HERO ══ -->
+    <section id="hero">
+      <div class="hero-content">
+        <div class="hero-eyebrow" id="eyebrow"></div>
+        <h1 class="hero-name">
+          <span class="name-inner" data-text="MinitxT">MinitxT</span>
+        </h1>
+        <p class="hero-tagline">
+          <span class="hl">AOSP enthusiast</span> &amp; custom ROM developer
         </p>
-        <div class="clinks">
-          <a class="clink" href="https://github.com/MinitxT" target="_blank">
-            <span class="ci">⌥</span> GitHub — ROM source & device trees
-          </a>
-          <a class="clink" href="https://t.me/minit_exe" target="_blank">
-            <span class="ci">✈</span> Telegram — @Minit
-          </a>
-          <a class="clink" href="https://instagram.com/minit.exe" target="_blank">
-            <span class="ci">◈</span> Instagram — photography
-          </a>
-          <a class="clink" href="https://xdaforums.com" target="_blank">
-            <span class="ci">▸</span> XDA Forums — ROM threads
-          </a>
+        <div class="hero-badges">
+          <span class="badge">📱 AOSP</span>
+          <span class="badge">🔧 Custom ROMs</span>
+          <span class="badge">⚡ Android 14+</span>
+          <span class="badge">🎓 Student</span>
         </div>
       </div>
+      <div class="scroll-hint">
+        <span>scroll</span>
+        <div class="scroll-line"></div>
+      </div>
+    </section>
+
+    <!-- ══ ABOUT ══ -->
+    <section id="about">
+      <div class="about-wrap reveal">
+
+        <div class="prof-wrap">
+          <div class="ring ring-1"></div>
+          <div class="ring ring-2"></div>
+          <div class="ring ring-3"></div>
+          <!-- To add your photo: replace the text "MT" below with <img src="YOUR_PHOTO_URL" alt="Minit"> -->
+          <div class="prof-img" id="profImg">MT</div>
+        </div>
+
+        <div class="about-text">
+          <h2>About Me</h2>
+          <p>
+            Hey, I'm <em>Minit</em> — a student who builds <em>custom ROMs</em> purely for the fun of it.
+            I dive into the AOSP ecosystem, mess with device trees, and spend late nights debugging build errors
+            that make absolutely no sense. Not doing it for fame — just genuinely love what goes on inside Android.
+          </p>
+          <div class="about-tags">
+            <span class="a-tag">Student</span>
+            <span class="a-tag">AOSP Builder</span>
+            <span class="a-tag">ROM Dev</span>
+            <span class="a-tag">Moto Manaus</span>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- divider -->
+    <div class="divider">
+      <div class="div-line"></div><div class="div-dot"></div><div class="div-line"></div>
+    </div>
+
+    <!-- ══ PROJECTS ══ -->
+    <section id="projects">
+
+      <div class="sec-head reveal">
+        <div class="sec-eye">// my builds</div>
+        <h2 class="sec-title">Projects</h2>
+      </div>
+
+      <div class="proj-grid">
+
+        <!-- crDroid -->
+        <div class="pcard reveal">
+          <div class="corner-tag live">RELEASED</div>
+          <div class="card-status">
+            <div class="sdot live"></div>
+            <span class="slabel live">Live Build</span>
+          </div>
+          <div class="rom-icon cr">🍦</div>
+          <h3>crDroid</h3>
+          <div class="p-device">Motorola Edge 40 Neo</div>
+          <div class="p-code">manaus</div>
+          <p class="p-desc">
+            Built from scratch for the Edge 40 Neo. Smooth, stable, and packed with features.
+            My first official AOSP build — compiled, tested, and shipped solo.
+          </p>
+          <div class="chips">
+            <span class="chip a">Android 14</span>
+            <span class="chip r">crDroid</span>
+            <span class="chip r">AOSP</span>
+          </div>
+          <a href="https://github.com/MinitxT" target="_blank" class="plink">View on GitHub →</a>
+        </div>
+
+        <!-- Evolution X -->
+        <div class="pcard upcoming reveal">
+          <div class="corner-tag upcoming">COMING SOON</div>
+          <div class="card-status">
+            <div class="sdot upcoming"></div>
+            <span class="slabel upcoming">In Development</span>
+          </div>
+          <div class="rom-icon evox">⚡</div>
+          <h3>Evolution X</h3>
+          <div class="p-device">Motorola Edge 40 Neo</div>
+          <div class="p-code">manaus</div>
+          <p class="p-desc">
+            The next build in the pipeline. More power, deeper customization, cleaner UI.
+            Currently in active development — stay tuned for the drop.
+          </p>
+          <div class="chips">
+            <span class="chip a">Android 15</span>
+            <span class="chip s">Evolution X</span>
+            <span class="chip s">In Dev</span>
+          </div>
+          <div class="plink off">⏳ In Development...</div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══ GITHUB ══ -->
+    <section id="github">
+      <div class="gh-inner reveal">
+        <div class="gh-ico">🐙</div>
+        <h2>Find Me on GitHub</h2>
+        <p>Device trees, kernel sources, and all the ROM work live here.</p>
+        <a href="https://github.com/MinitxT" target="_blank" class="gh-btn">
+          github.com/MinitxT →
+        </a>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      crafted with <span class="pk">♥</span> by MinitxT &nbsp;·&nbsp; AOSP enthusiast &nbsp;·&nbsp; student who builds ROMs for fun
+    </footer>
+
+  </main>
+
+  <!-- ══ MUSIC PLAYER ══ -->
+  <div class="music-pl paused" id="musicPl">
+    <button class="m-btn" id="mBtn" onclick="toggleMusic()">🎵</button>
+    <div class="m-info">
+      <span class="m-title">Golden Brown Lofi</span>
+      <span class="m-subtitle" id="mSub">click to play</span>
+    </div>
+    <div class="m-bars">
+      <div class="mbar"></div>
+      <div class="mbar"></div>
+      <div class="mbar"></div>
+      <div class="mbar"></div>
+      <div class="mbar"></div>
     </div>
   </div>
-</section>
 
-<!-- FOOTER -->
-<footer>
-  <span class="ft-name">Minit</span>
-  <span class="ft-code">
-    <span class="r">📷 shots</span> · <span class="p">⚙ roms</span> · built just for fun
-  </span>
-</footer>
+  <!-- Hidden YouTube embed -->
+  <iframe
+    id="ytf"
+    width="0" height="0"
+    src="about:blank"
+    frameborder="0"
+    allow="autoplay"
+    style="position:fixed;bottom:-200px;left:-200px;opacity:0;pointer-events:none;"
+  ></iframe>
 
-<script>
-/* respects the OS-level "reduce motion" setting for the heavier ambient effects below */
-const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  <script>
+  /* ══════════════════════════════════════
+     CUSTOM CURSOR
+  ══════════════════════════════════════ */
+  const cur     = document.getElementById('cur');
+  const curRing = document.getElementById('cur-ring');
+  let mx=0,my=0,rx=0,ry=0;
 
-/* ═══════════════════════════════════════
-   CURSOR
-════════════════════════════════════════ */
-const curEl   = document.getElementById('cur');
-const curRing = document.getElementById('cur-ring');
-const trailCvs= document.getElementById('cur-trail');
-const tctx    = trailCvs.getContext('2d');
-let mx=-200,my=-200,rx=-200,ry=-200;
-const trail=[];
+  document.addEventListener('mousemove',e=>{
+    mx=e.clientX; my=e.clientY;
+    cur.style.left = mx+'px';
+    cur.style.top  = my+'px';
+  });
 
-function resizeT(){trailCvs.width=innerWidth;trailCvs.height=innerHeight}
-resizeT();addEventListener('resize',resizeT);
+  ;(function ringLoop(){
+    rx += (mx-rx)*.12;
+    ry += (my-ry)*.12;
+    curRing.style.left = rx+'px';
+    curRing.style.top  = ry+'px';
+    requestAnimationFrame(ringLoop);
+  })();
 
-document.addEventListener('mousemove',e=>{
-  mx=e.clientX;my=e.clientY;
-  curEl.style.transform=`translate(${mx-5}px,${my-5}px)`;
-  trail.push({x:mx,y:my,a:1,s:5,
-    c:Math.random()>.5?'255,45,107':'192,38,211'});
-  if(trail.length>24)trail.shift();
-});
+  document.querySelectorAll('a,button,.pcard,.badge,.plink').forEach(el=>{
+    el.addEventListener('mouseenter',()=>{
+      cur.style.transform='translate(-50%,-50%) scale(2.4)';
+      curRing.style.transform='translate(-50%,-50%) scale(1.6)';
+    });
+    el.addEventListener('mouseleave',()=>{
+      cur.style.transform='translate(-50%,-50%) scale(1)';
+      curRing.style.transform='translate(-50%,-50%) scale(1)';
+    });
+  });
 
-(function loopCursor(){
-  requestAnimationFrame(loopCursor);
-  if(document.hidden) return;
-  rx+=(mx-rx)*.12; ry+=(my-ry)*.12;
-  curRing.style.transform=`translate(${rx-19}px,${ry-19}px)`;
-  if(!trail.length) return;
-  tctx.clearRect(0,0,trailCvs.width,trailCvs.height);
-  for(let i=trail.length-1;i>=0;i--){
-    const t=trail[i];
-    t.a*=.78;t.s*=.88;
-    tctx.fillStyle=`rgba(${t.c},${t.a*.6})`;
-    tctx.fillRect(t.x-t.s/2,t.y-t.s/2,t.s,t.s);
-    if(t.a<0.02) trail.splice(i,1);
-  }
-})();
+  /* ══════════════════════════════════════
+     SAKURA CANVAS
+  ══════════════════════════════════════ */
+  const sk  = document.getElementById('sk');
+  const skx = sk.getContext('2d');
 
-/* ═══════════════════════════════════════
-   GLOBAL CODE RAIN (background)
-════════════════════════════════════════ */
-const rainCvs=document.getElementById('code-rain');
-const rctx=rainCvs.getContext('2d');
-function resizeRain(){rainCvs.width=innerWidth;rainCvs.height=innerHeight}
-resizeRain();addEventListener('resize',()=>{resizeRain();initRain()});
+  function resize(){ sk.width=window.innerWidth; sk.height=window.innerHeight; }
+  resize();
+  window.addEventListener('resize',resize);
 
-const CHARS='アイウエオカキクケコサシスセソタチツテトナニヌネノAOSPKERNELROMANDROIDDEVICETREEFLASHRECOVERY01';
-let rainCols,rainDrops;
-function initRain(){
-  rainCols=Math.floor(rainCvs.width/16);
-  rainDrops=Array(rainCols).fill(0).map(()=>Math.random()*rainCvs.height/16);
-}
-initRain();
+  const PETAL_COLORS=[
+    [255,180,195],[255,110,175],[220,115,215],
+    [160,120,230],[225,165,225],[255,200,220]
+  ];
 
-let rainAcc=0,rainLast=performance.now();
-const rainInterval=reduceMotion?220:55;
-function rainLoop(now){
-  requestAnimationFrame(rainLoop);
-  if(document.hidden)return;
-  rainAcc+=now-rainLast;rainLast=now;
-  if(rainAcc<rainInterval)return;
-  rainAcc=0;
-  rctx.fillStyle='rgba(5,2,10,0.05)';
-  rctx.fillRect(0,0,rainCvs.width,rainCvs.height);
-  for(let i=0;i<rainCols;i++){
-    const ch=CHARS[Math.floor(Math.random()*CHARS.length)];
-    // gradient colour: top = bright rose, lower = purple/dim
-    const progress=rainDrops[i]*16/rainCvs.height;
-    if(progress<.15){
-      rctx.fillStyle=`rgba(255,110,180,${.9-progress*4})`;
-    } else {
-      rctx.fillStyle=`rgba(192,38,211,${.25*(1-progress)})`;
+  class Petal{
+    constructor(spread){
+      this.reset(spread);
     }
-    rctx.font='13px JetBrains Mono,monospace';
-    rctx.fillText(ch,i*16,rainDrops[i]*16);
-    if(rainDrops[i]*16>rainCvs.height&&Math.random()>.97)rainDrops[i]=0;
-    rainDrops[i]+=.5+Math.random()*.5;
+    reset(spread=false){
+      this.x = Math.random()*sk.width;
+      this.y = spread ? Math.random()*sk.height : -20;
+      this.sz = Math.random()*5+3;
+      this.vx = (Math.random()-.5)*1.4;
+      this.vy = Math.random()*1.3+.5;
+      this.rot= Math.random()*Math.PI*2;
+      this.rv = (Math.random()-.5)*.045;
+      this.op = Math.random()*.55+.18;
+      this.sw = Math.random()*1.8+.3;
+      this.swo= Math.random()*Math.PI*2;
+      this.sws= Math.random()*.018+.005;
+      this.col= PETAL_COLORS[Math.floor(Math.random()*PETAL_COLORS.length)];
+    }
+    update(){
+      this.swo+=this.sws;
+      this.x  +=this.vx+Math.sin(this.swo)*this.sw*.28;
+      this.y  +=this.vy;
+      this.rot+=this.rv;
+      if(this.y>sk.height+24) this.reset();
+    }
+    draw(){
+      skx.save();
+      skx.translate(this.x,this.y);
+      skx.rotate(this.rot);
+      skx.globalAlpha=this.op;
+      const[r,g,b]=this.col;
+      skx.fillStyle=`rgb(${r},${g},${b})`;
+      skx.beginPath();
+      skx.ellipse(0,0,this.sz*1.55,this.sz*.78,0,0,Math.PI*2);
+      skx.fill();
+      skx.fillStyle='rgba(255,255,255,.28)';
+      skx.beginPath();
+      skx.ellipse(-this.sz*.28,-this.sz*.18,this.sz*.45,this.sz*.18,-.45,0,Math.PI*2);
+      skx.fill();
+      skx.restore();
+    }
   }
-}
-requestAnimationFrame(rainLoop);
 
-/* ═══════════════════════════════════════
-   HERO CODE RAIN (dev side only)
-════════════════════════════════════════ */
-const hrc=document.getElementById('code-rain-hero');
-const hrctx=hrc.getContext('2d');
-function resizeHrc(){
-  hrc.width=hrc.parentElement.offsetWidth;
-  hrc.height=hrc.parentElement.offsetHeight;
-}
-resizeHrc();addEventListener('resize',resizeHrc);
+  const petals=Array.from({length:45},(_,i)=>new Petal(i<20));
 
-const hChars='AOSPKERNELDEVICETREEHALFLASHMANAUSRECOVERYSELINUXVENDOR{}[];()=>0x1';
-const hCols=()=>Math.floor(hrc.width/13);
-let hDrops=[];
-function initHDrops(){hDrops=Array(hCols()).fill(1)}
-initHDrops();addEventListener('resize',initHDrops);
+  ;(function loop(){
+    skx.clearRect(0,0,sk.width,sk.height);
+    petals.forEach(p=>{ p.update(); p.draw(); });
+    requestAnimationFrame(loop);
+  })();
 
-let hRainAcc=0,hRainLast=performance.now();
-const hRainInterval=reduceMotion?260:65;
-function hRainLoop(now){
-  requestAnimationFrame(hRainLoop);
-  if(document.hidden)return;
-  hRainAcc+=now-hRainLast;hRainLast=now;
-  if(hRainAcc<hRainInterval)return;
-  hRainAcc=0;
-  hrctx.fillStyle='rgba(5,2,10,0.07)';
-  hrctx.fillRect(0,0,hrc.width,hrc.height);
-  for(let i=0;i<hDrops.length;i++){
-    const ch=hChars[Math.floor(Math.random()*hChars.length)];
-    const bright=Math.random()>.9;
-    hrctx.fillStyle=bright?'rgba(255,45,107,.85)':'rgba(192,38,211,.5)';
-    hrctx.font='12px JetBrains Mono,monospace';
-    hrctx.fillText(ch,i*13,hDrops[i]*13);
-    if(hDrops[i]*13>hrc.height&&Math.random()>.975)hDrops[i]=0;
-    hDrops[i]++;
-  }
-}
-requestAnimationFrame(hRainLoop);
+  /* ══════════════════════════════════════
+     SCROLL REVEAL
+  ══════════════════════════════════════ */
+  const obs = new IntersectionObserver(entries=>{
+    entries.forEach((e,i)=>{
+      if(e.isIntersecting) setTimeout(()=>e.target.classList.add('vis'),i*80);
+    });
+  },{threshold:.1});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 
-/* ═══════════════════════════════════════
-   FLOATING PARTICLES
-════════════════════════════════════════ */
-const pCvs=document.createElement('canvas');
-pCvs.style.cssText='position:fixed;inset:0;z-index:1;pointer-events:none';
-document.body.prepend(pCvs);
-const pctx=pCvs.getContext('2d');
-function resizeP(){pCvs.width=innerWidth;pCvs.height=innerHeight}
-resizeP();addEventListener('resize',resizeP);
+  /* ══════════════════════════════════════
+     TYPING EYEBROW
+  ══════════════════════════════════════ */
+  const eyebrow = document.getElementById('eyebrow');
+  const TXT = '// Hello, World';
+  let ti=0;
+  setTimeout(()=>{
+    const iv=setInterval(()=>{
+      eyebrow.textContent+=TXT[ti++];
+      if(ti>=TXT.length) clearInterval(iv);
+    },78);
+  },500);
 
-const PARTICLE_COUNT=reduceMotion?0:28;
-const CONNECT_DIST=120,CONNECT_DIST2=CONNECT_DIST*CONNECT_DIST;
-const particles=Array.from({length:PARTICLE_COUNT},()=>({
-  x:Math.random()*innerWidth,
-  y:Math.random()*innerHeight,
-  r:Math.random()*1.5+.3,
-  vx:(Math.random()-.5)*.25,
-  vy:(Math.random()-.5)*.25,
-  a:Math.random()*.5+.1,
-  c:Math.random()>.5?[255,45,107]:[192,38,211],
-  pulse:Math.random()*Math.PI*2,
-  pulseV:Math.random()*.02+.005,
-}));
+  /* ══════════════════════════════════════
+     MUSIC PLAYER
+     Using YouTube IFrame API
+  ══════════════════════════════════════ */
+  let isPlaying=false, ytReady=false, ytP=null;
 
-(function loopP(){
-  requestAnimationFrame(loopP);
-  if(document.hidden)return;
-  pctx.clearRect(0,0,pCvs.width,pCvs.height);
-  const n=particles.length;
-  for(let i=0;i<n;i++){
-    const p=particles[i];
-    p.x+=p.vx;p.y+=p.vy;p.pulse+=p.pulseV;
-    if(p.x<0)p.x=pCvs.width;
-    if(p.x>pCvs.width)p.x=0;
-    if(p.y<0)p.y=pCvs.height;
-    if(p.y>pCvs.height)p.y=0;
-    const glow=Math.sin(p.pulse)*.3+.7;
-    pctx.beginPath();
-    pctx.arc(p.x,p.y,p.r,0,Math.PI*2);
-    pctx.fillStyle=`rgba(${p.c[0]},${p.c[1]},${p.c[2]},${p.a*glow})`;
-    pctx.fill();
-  }
-  // connection lines: each pair checked once, with a cheap squared-distance
-  // pre-filter so sqrt only runs for pairs that are actually close enough to draw
-  for(let i=0;i<n;i++){
-    const p=particles[i];
-    for(let j=i+1;j<n;j++){
-      const q=particles[j];
-      const dx=p.x-q.x,dy=p.y-q.y;
-      const d2=dx*dx+dy*dy;
-      if(d2<CONNECT_DIST2){
-        const dist=Math.sqrt(d2);
-        pctx.beginPath();
-        pctx.moveTo(p.x,p.y);pctx.lineTo(q.x,q.y);
-        pctx.strokeStyle=`rgba(${p.c[0]},${p.c[1]},${p.c[2]},${(1-dist/CONNECT_DIST)*.06})`;
-        pctx.lineWidth=.5;
-        pctx.stroke();
+  // Load YT API
+  window.onYouTubeIframeAPIReady=function(){
+    ytP=new YT.Player('ytf',{
+      videoId:'5qap5aO4i9A',   // lofi girl 24/7 — swap ID for any golden brown lofi track
+      playerVars:{autoplay:0,loop:1,controls:0},
+      events:{
+        onReady:()=>{ ytReady=true; }
       }
+    });
+  };
+  const yts=document.createElement('script');
+  yts.src='https://www.youtube.com/iframe_api';
+  document.head.appendChild(yts);
+
+  function toggleMusic(){
+    const pl  = document.getElementById('musicPl');
+    const btn = document.getElementById('mBtn');
+    const sub = document.getElementById('mSub');
+    isPlaying=!isPlaying;
+
+    if(isPlaying){
+      pl.classList.remove('paused');
+      btn.textContent='⏸';
+      sub.textContent='playing...';
+      if(ytReady && ytP && ytP.playVideo){
+        ytP.playVideo();
+      } else {
+        // fallback — open in new tab
+        window.open('https://www.youtube.com/watch?v=5qap5aO4i9A','_blank');
+      }
+    } else {
+      pl.classList.add('paused');
+      btn.textContent='🎵';
+      sub.textContent='click to play';
+      if(ytReady && ytP && ytP.pauseVideo) ytP.pauseVideo();
     }
   }
-})();
 
-/* ═══════════════════════════════════════
-   SCROLL REVEAL
-════════════════════════════════════════ */
-const reveals=document.querySelectorAll('.reveal');
-const revIO=new IntersectionObserver(es=>{
-  es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('visible');revIO.unobserve(e.target)}});
-},{threshold:.1});
-reveals.forEach(el=>revIO.observe(el));
+  /* ══════════════════════════════════════
+     NAV ACTIVE STATE
+  ══════════════════════════════════════ */
+  const secs  = document.querySelectorAll('section[id]');
+  const nlinks= document.querySelectorAll('.nav-links a');
 
-/* ═══════════════════════════════════════
-   SKILL BARS
-════════════════════════════════════════ */
-const barIO=new IntersectionObserver(es=>{
-  es.forEach(e=>{
-    if(e.isIntersecting){
-      e.target.querySelectorAll('.sk-row').forEach(row=>{
-        row.querySelector('.sk-fill').style.width=row.dataset.pct+'%';
-      });
-      barIO.unobserve(e.target);
+  window.addEventListener('scroll',()=>{
+    let cur='';
+    secs.forEach(s=>{ if(window.scrollY>=s.offsetTop-120) cur=s.id; });
+    nlinks.forEach(a=>{
+      a.style.color = a.getAttribute('href')==='#'+cur ? '#8b5cf6' : '';
+    });
+  });
+
+  /* ══════════════════════════════════════
+     PROFILE PHOTO (drag & drop support)
+  ══════════════════════════════════════ */
+  // Drop a photo onto the profile circle to preview it
+  const profImg=document.getElementById('profImg');
+  profImg.addEventListener('dragover',e=>e.preventDefault());
+  profImg.addEventListener('drop',e=>{
+    e.preventDefault();
+    const file=e.dataTransfer.files[0];
+    if(file&&file.type.startsWith('image/')){
+      const reader=new FileReader();
+      reader.onload=ev=>{
+        profImg.innerHTML=`<img src="${ev.target.result}" alt="Minit">`;
+      };
+      reader.readAsDataURL(file);
     }
   });
-},{threshold:.3});
-document.querySelectorAll('.skills-grid').forEach(el=>barIO.observe(el));
+  </script>
 
-/* ═══════════════════════════════════════
-   TYPED HERO SUBTITLE
-════════════════════════════════════════ */
-const devTitle=document.querySelector('.h-dev-title');
-const blinkEl=devTitle.querySelector('.blink');
-const phrases=[
-  '$ building\ncustom ROMs\nfrom source',
-  '$ flashing\nmanaus device\nwith love',
-  '$ compiling\nkernel patches\nfor fun',
-  '$ shooting\ngolden hour\nwith a phone',
-];
-let pi=0,ci=0,del=false;
-const lines=document.createTextNode('');
-devTitle.prepend(lines);
-
-function typeLoop(){
-  const full=phrases[pi];
-  if(!del){
-    lines.textContent=full.slice(0,ci+1).replace(/\\n/g,'\n');
-    ci++;
-    if(ci===full.length){del=true;setTimeout(typeLoop,2200);return}
-  } else {
-    lines.textContent=full.slice(0,ci-1).replace(/\\n/g,'\n');
-    ci--;
-    if(ci===0){del=false;pi=(pi+1)%phrases.length}
-  }
-  setTimeout(typeLoop,del?32:55);
-}
-setTimeout(typeLoop,1000);
-
-/* ═══════════════════════════════════════
-   MAGNETIC BUTTONS
-════════════════════════════════════════ */
-document.querySelectorAll('.btn-rose,.btn-ghost-rose,.clink').forEach(btn=>{
-  btn.addEventListener('mousemove',e=>{
-    const r=btn.getBoundingClientRect();
-    const dx=e.clientX-(r.left+r.width/2);
-    const dy=e.clientY-(r.top+r.height/2);
-    btn.style.transform=`translate(${dx*.1}px,${dy*.1-2}px)`;
-  });
-  btn.addEventListener('mouseleave',()=>{btn.style.transform=''});
-});
-
-/* ═══════════════════════════════════════
-   CARD MOUSE GLOW
-════════════════════════════════════════ */
-document.querySelectorAll('.rom-card,.pcard').forEach(card=>{
-  card.addEventListener('mousemove',e=>{
-    const r=card.getBoundingClientRect();
-    card.style.setProperty('--mx',((e.clientX-r.left)/r.width*100)+'%');
-    card.style.setProperty('--my',((e.clientY-r.top)/r.height*100)+'%');
-  });
-});
-
-/* ═══════════════════════════════════════
-   NAV ACTIVE HIGHLIGHT
-════════════════════════════════════════ */
-const secs=document.querySelectorAll('section[id]');
-const navLinks=document.querySelectorAll('.nav-links a');
-const navIO=new IntersectionObserver(es=>{
-  es.forEach(e=>{
-    if(e.isIntersecting){
-      navLinks.forEach(a=>{
-        a.style.color=a.getAttribute('href')==='#'+e.target.id?'var(--white)':'';
-      });
-    }
-  });
-},{threshold:.5});
-secs.forEach(s=>navIO.observe(s));
-</script>
 </body>
 </html>
