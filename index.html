@@ -10,15 +10,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Space+Grotesk:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --void:     #03030a;
-      --deep:     #07071a;
-      --surface:  #0d0d22;
-      --card:     #12122e;
+      /* true AMOLED black scale */
+      --void:     #000000;
+      --deep:     #050505;
+      --surface:  #050505;
+      --card:     #0a0a0a;
+      --card-2:   #0d0d0f;
       --border:   rgba(139,92,246,.18);
       --purple:   #8b5cf6;
       --violet:   #7c3aed;
       --indigo:   #6366f1;
       --pink:     #ec4899;
+      --accent:   #c084fc;
+      --glow:     #d946ef;
       --rose:     #f43f5e;
       --green:    #10b981;
       --amber:    #f59e0b;
@@ -32,6 +36,15 @@
     }
 
     *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .001ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: .001ms !important;
+        scroll-behavior:auto !important;
+      }
+    }
 
     html { scroll-behavior:smooth; overflow-x:hidden; }
 
@@ -83,7 +96,7 @@
       position:fixed; inset:0 0 auto 0; z-index:200;
       display:flex; align-items:center; justify-content:space-between;
       padding:18px 56px;
-      background:rgba(3,3,10,.72);
+      background:rgba(0,0,0,.75);
       backdrop-filter:blur(24px);
       border-bottom:1px solid var(--border);
     }
@@ -107,8 +120,22 @@
     .nav-links a:hover { color:var(--text); }
     .nav-links a:hover::after { width:100%; }
 
+    .nav-toggle{
+      display:none; flex-direction:column; justify-content:center; gap:5px;
+      width:34px; height:34px; background:none; border:none; cursor:pointer; padding:0;
+      z-index:210;
+    }
+    .nav-toggle span{
+      display:block; width:100%; height:1.6px; background:var(--text);
+      transition:all .3s ease;
+    }
+    .nav-toggle.open span:nth-child(1){ transform:translateY(6.5px) rotate(45deg); }
+    .nav-toggle.open span:nth-child(2){ opacity:0; }
+    .nav-toggle.open span:nth-child(3){ transform:translateY(-6.5px) rotate(-45deg); }
+
     /* ── MAIN ── */
     main { position:relative; z-index:1; }
+    section[id] { scroll-margin-top:84px; }
 
     /* ═══════════════════════════════
        HERO
@@ -291,6 +318,192 @@
     }
     .div-line { flex:1; height:1px; background:linear-gradient(to right,transparent,var(--border),transparent); }
     .div-dot  { width:5px; height:5px; background:var(--purple); border-radius:50%; box-shadow:0 0 8px var(--purple); }
+
+    /* ═══════════════════════════════
+       CURRENTLY MAINTAINING
+    ═══════════════════════════════ */
+    #maintaining { padding:20px 24px 50px; max-width:1080px; margin:0 auto; }
+
+    .maint-wrap {
+      display:grid; grid-template-columns:300px minmax(0,1fr); gap:64px;
+      align-items:center;
+    }
+    .maint-info{ min-width:0; }
+
+    /* ── phone stage ── */
+    .phone-stage {
+      position:relative; height:480px;
+      display:flex; align-items:center; justify-content:center;
+      perspective:1100px;
+    }
+    .phone-grid-floor{
+      position:absolute; inset:auto 0 6% 0; height:55%;
+      background-image:
+        linear-gradient(rgba(192,132,252,.08) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(192,132,252,.08) 1px,transparent 1px);
+      background-size:22px 22px;
+      -webkit-mask-image:linear-gradient(to bottom,transparent,rgba(0,0,0,.9));
+      mask-image:linear-gradient(to bottom,transparent,rgba(0,0,0,.9));
+      transform:rotateX(62deg);
+      pointer-events:none;
+    }
+    .phone-aura{
+      position:absolute; width:280px; height:280px; border-radius:50%;
+      background:radial-gradient(circle,rgba(139,92,246,.32) 0%,rgba(217,70,239,.14) 45%,transparent 72%);
+      filter:blur(8px);
+      animation:auraPulse 4.4s ease-in-out infinite;
+      pointer-events:none;
+    }
+    @keyframes auraPulse{
+      0%,100%{ transform:scale(.92); opacity:.65; }
+      50%    { transform:scale(1.08); opacity:1; }
+    }
+    .energy-ring{
+      position:absolute; width:160px; height:340px; border-radius:74px;
+      border:1px solid rgba(217,70,239,.35);
+      pointer-events:none;
+      animation:ringPulse 3.6s cubic-bezier(.4,0,.3,1) infinite;
+    }
+    .energy-ring.er-2{ animation-delay:1.8s; border-color:rgba(139,92,246,.3); }
+    @keyframes ringPulse{
+      0%   { transform:scale(.85); opacity:0; }
+      35%  { opacity:.7; }
+      100% { transform:scale(1.5); opacity:0; }
+    }
+
+    .phone-3d{
+      position:relative; width:220px; height:460px;
+      transform-style:preserve-3d;
+      animation:phoneFloat 5.5s ease-in-out infinite;
+      transition:transform .15s ease-out;
+      will-change:transform;
+    }
+    @keyframes phoneFloat{
+      0%,100% { transform:translateY(0)    rotateZ(-.4deg); }
+      50%     { transform:translateY(-14px) rotateZ(.4deg); }
+    }
+    .phone-svg{
+      width:100%; height:100%; overflow:visible;
+      filter:drop-shadow(0 0 14px rgba(139,92,246,.55)) drop-shadow(0 0 30px rgba(217,70,239,.28));
+      animation:glowBreath 3.2s ease-in-out infinite;
+    }
+    @keyframes glowBreath{
+      0%,100%{ filter:drop-shadow(0 0 10px rgba(139,92,246,.45)) drop-shadow(0 0 22px rgba(217,70,239,.22)); }
+      50%    { filter:drop-shadow(0 0 20px rgba(139,92,246,.75)) drop-shadow(0 0 42px rgba(217,70,239,.4)); }
+    }
+    .p-island,.p-lens,.p-flash,.p-logobg,.p-btn{ filter:drop-shadow(0 0 4px rgba(217,70,239,.4)); }
+    .p-dot{ filter:drop-shadow(0 0 5px #d946ef); }
+    .p-label{
+      font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:.5px;
+      fill:#e9d5ff; opacity:.75;
+    }
+
+    .phone-tag{
+      position:absolute; bottom:0; left:50%; transform:translateX(-50%);
+      display:flex; align-items:center; gap:7px;
+      padding:6px 16px; border-radius:100px;
+      background:rgba(217,70,239,.1); border:1px solid rgba(217,70,239,.4);
+      font-family:'JetBrains Mono',monospace; font-size:.74rem; color:#f0abfc;
+      backdrop-filter:blur(8px);
+    }
+    .pt-dot{ width:6px; height:6px; border-radius:50%; background:var(--glow); box-shadow:0 0 8px var(--glow); }
+
+    /* ── info column ── */
+    .maint-status{
+      display:flex; align-items:center; gap:9px; margin-bottom:18px;
+      font-family:'JetBrains Mono',monospace; font-size:.74rem; letter-spacing:2.5px;
+      color:var(--green);
+    }
+    .mstat-dot{ width:8px; height:8px; border-radius:50%; background:var(--green); animation:pg 2s infinite; }
+
+    .maint-device{
+      font-family:'Orbitron',monospace; font-weight:700;
+      font-size:clamp(1.3rem,3vw,1.9rem); margin-bottom:18px; line-height:1.3;
+      color:var(--text);
+    }
+    .msep{ color:var(--subtle); margin:0 4px; }
+
+    .maint-rom-row{ display:flex; gap:10px; flex-wrap:wrap; margin-bottom:26px; }
+    .rom-chip{
+      font-family:'JetBrains Mono',monospace; font-size:.78rem; padding:7px 16px;
+      border-radius:8px;
+    }
+    .rom-chip.os { background:rgba(139,92,246,.12); border:1px solid rgba(139,92,246,.35); color:var(--accent); }
+    .rom-chip.rom{ background:rgba(217,70,239,.1); border:1px solid rgba(217,70,239,.35); color:#f0abfc; }
+
+    .maint-badges{ display:flex; flex-wrap:wrap; gap:9px; margin-bottom:30px; }
+    .mbadge{
+      padding:7px 15px; border-radius:100px;
+      font-family:'JetBrains Mono',monospace; font-size:.7rem;
+      color:var(--muted); border:1px solid var(--border); background:var(--glass);
+      transition:all .3s;
+    }
+    .mbadge:hover{
+      color:#f0abfc; border-color:var(--glow);
+      background:rgba(217,70,239,.1);
+      box-shadow:0 0 16px rgba(217,70,239,.3);
+      transform:translateY(-2px);
+    }
+
+    /* ── build terminal ── */
+    .build-terminal{
+      position:relative;
+      background:var(--card); border:1px solid var(--border); border-radius:14px;
+      overflow:hidden;
+      box-shadow:0 20px 50px rgba(0,0,0,.6), 0 0 0 1px rgba(139,92,246,.06) inset;
+    }
+    .build-terminal::before{
+      content:''; position:absolute; top:0; left:0; right:0; height:2px; z-index:1;
+      background:linear-gradient(90deg,var(--pink),var(--purple),var(--glow));
+      opacity:.75;
+    }
+    .term-bar{
+      display:flex; align-items:center; gap:8px;
+      padding:11px 16px; background:#0d0d0f;
+      border-bottom:1px solid var(--border);
+    }
+    .term-dot{ width:9px; height:9px; border-radius:50%; }
+    .term-dot.r{ background:#f87171; } .term-dot.y{ background:#fbbf24; } .term-dot.g{ background:#34d399; }
+    .term-path{
+      margin-left:8px; min-width:0; flex:1 1 auto;
+      font-family:'JetBrains Mono',monospace; font-size:.7rem; color:var(--subtle);
+      overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+    }
+    .term-path em{ color:var(--accent); font-style:normal; }
+    .term-footer{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:9px 18px; border-top:1px solid var(--border); background:#0d0d0f;
+      font-family:'JetBrains Mono',monospace; font-size:.62rem; letter-spacing:1.5px;
+    }
+    .tf-left{ color:var(--green); display:flex; align-items:center; gap:7px; }
+    .tf-dot{ width:6px; height:6px; border-radius:50%; background:var(--green); box-shadow:0 0 6px var(--green); animation:pg 2s infinite; }
+    .tf-right{ color:var(--pink); }
+    .term-body{
+      font-family:'JetBrains Mono',monospace; font-size:.78rem; line-height:1.85;
+      padding:20px 22px; height:250px; overflow-y:auto;
+      white-space:pre-wrap; word-break:break-word;
+      color:var(--muted);
+    }
+    .term-body .c-cmd  { color:#e9d5ff; }
+    .term-body .c-cmd::before{ content:'$ '; color:var(--purple); }
+    .term-body .c-ok   { color:var(--green); }
+    .term-body .c-tag  { color:var(--accent); }
+    .term-body .c-dim  { color:var(--subtle); }
+    .term-body .c-pink { color:var(--pink); }
+    .term-cursor{
+      display:inline-block; width:7px; height:14px; margin-left:1px;
+      background:var(--accent); vertical-align:middle;
+      animation:blink 1s step-end infinite;
+      box-shadow:0 0 6px var(--accent);
+    }
+    @keyframes blink{ 0%,50%{ opacity:1; } 51%,100%{ opacity:0; } }
+
+    @media(max-width:880px){
+      .maint-wrap{ grid-template-columns:minmax(0,1fr); gap:40px; }
+      .phone-stage{ height:380px; }
+      .phone-3d{ width:170px; height:355px; }
+      .term-body{ height:210px; font-size:.72rem; }
+    }
 
     /* ═══════════════════════════════
        PROJECTS
@@ -492,7 +705,23 @@
     /* ── Responsive ── */
     @media(max-width:768px){
       nav { padding:14px 22px; }
-      .nav-links { gap:20px; }
+      .nav-toggle{ display:flex; }
+      .nav-links {
+        display:flex; flex-direction:column; gap:0;
+        position:fixed; top:0; right:0;
+        width:min(72vw,280px); height:100vh;
+        background:rgba(0,0,0,.94); backdrop-filter:blur(24px);
+        border-left:1px solid var(--border);
+        padding:90px 8px 30px;
+        transform:translateX(100%);
+        transition:transform .35s cubic-bezier(.4,0,.2,1);
+      }
+      .nav-links.open{ transform:translateX(0); }
+      .nav-links a{
+        padding:16px 20px; border-bottom:1px solid rgba(139,92,246,.08);
+        font-size:.85rem;
+      }
+      .nav-links a::after{ display:none; }
       .about-wrap { flex-direction:column; text-align:center; padding:34px 24px; gap:34px; }
       .about-tags { justify-content:center; }
       .proj-grid  { grid-template-columns:1fr; }
@@ -517,8 +746,12 @@
   <!-- NAV -->
   <nav>
     <div class="nav-logo">Minit</div>
-    <div class="nav-links">
+    <button class="nav-toggle" id="navToggle" aria-label="Toggle menu" aria-expanded="false">
+      <span></span><span></span><span></span>
+    </button>
+    <div class="nav-links" id="navLinks">
       <a href="#about">About</a>
+      <a href="#maintaining">Maintaining</a>
       <a href="#projects">Projects</a>
       <a href="#github">GitHub</a>
     </div>
@@ -539,7 +772,7 @@
         <div class="hero-badges">
           <span class="badge">📱 AOSP</span>
           <span class="badge">🔧 Custom ROMs</span>
-          <span class="badge">⚡ Android 16+</span>
+          <span class="badge">⚡ Android  16+</span>
           <span class="badge">🎓 Student</span>
         </div>
       </div>
@@ -563,17 +796,136 @@
 
         <div class="about-text">
           <h2>About Me</h2>
-          <p>
-            Hey, I'm <em>Minit</em> — a student who builds <em>custom ROMs</em> purely for the fun of it.
-            I dive into the AOSP ecosystem, mess with device trees, and spend late nights debugging build errors
-            that make absolutely no sense. Not doing it for fame — just genuinely love what goes on inside Android.
-          </p>
+          <div class="sec">
+    <div class="about-grid">
+      <div class="about-text reveal left">
+        <span class="greeting">Hey, I'm <span class="r">Minit</span></span>
+        <p>A developer who builds <strong>custom Android ROMs from AOSP source</strong> and a photographer who shoots everything on a smartphone — the same device I just flashed.</p>
+        <p>Currently <strong>maintaining manaus</strong> (Moto Edge 40 Neo) — kernel optimizations, and keeping it updated with latest security patches.</p>
+        <p>By evening I'm chasing <strong>golden hour light</strong>. By night I'm staring at build logs. Both feel the same kind of satisfying when they come together.</p>
+        <div class="fun-note"></div>
+      </div>
           <div class="about-tags">
             <span class="a-tag">Student</span>
             <span class="a-tag">AOSP Builder</span>
             <span class="a-tag">ROM Dev</span>
             <span class="a-tag">Moto Manaus</span>
           </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- divider -->
+    <div class="divider">
+      <div class="div-line"></div><div class="div-dot"></div><div class="div-line"></div>
+    </div>
+
+    <!-- ══ CURRENTLY MAINTAINING ══ -->
+    <section id="maintaining">
+
+      <div class="sec-head reveal">
+        <div class="sec-eye">// build status</div>
+        <h2 class="sec-title">Currently Maintaining</h2>
+      </div>
+
+      <div class="maint-wrap reveal">
+
+        <!-- phone showcase -->
+        <div class="phone-stage" id="phoneStage">
+          <div class="phone-aura"></div>
+          <div class="energy-ring er-1"></div>
+          <div class="energy-ring er-2"></div>
+          <div class="phone-grid-floor"></div>
+
+          <div class="phone-3d" id="phone3d">
+            <svg class="phone-svg" viewBox="0 0 240 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="phoneStroke" x1="0" y1="0" x2="240" y2="500" gradientUnits="userSpaceOnUse">
+                  <stop offset="0" stop-color="#d8b4fe"/>
+                  <stop offset=".5" stop-color="#8b5cf6"/>
+                  <stop offset="1" stop-color="#ec4899"/>
+                </linearGradient>
+              </defs>
+
+              <!-- body -->
+              <rect x="10" y="8" width="220" height="484" rx="48" ry="48" stroke="url(#phoneStroke)" stroke-width="2.4" class="p-body"/>
+              <rect x="19" y="17" width="202" height="466" rx="40" ry="40" stroke="#c084fc" stroke-width="1" opacity=".28" class="p-edge"/>
+
+              <!-- antenna lines -->
+              <line x1="44" y1="24" x2="110" y2="24" stroke="#c084fc" stroke-width="1.4" opacity=".35"/>
+              <line x1="150" y1="480" x2="196" y2="480" stroke="#c084fc" stroke-width="1.4" opacity=".35"/>
+
+              <!-- side buttons -->
+              <rect x="225" y="146" width="6" height="40" rx="3" class="p-btn" stroke="#d946ef" stroke-width="1.4"/>
+              <rect x="225" y="196" width="6" height="58" rx="3" class="p-btn" stroke="#d946ef" stroke-width="1.4"/>
+
+              <!-- camera island -->
+              <rect x="34" y="34" width="90" height="128" rx="22" ry="22" class="p-island" stroke="#ec4899" stroke-width="1.8"/>
+              <circle cx="64" cy="70" r="26" class="p-lens" stroke="url(#phoneStroke)" stroke-width="1.8"/>
+              <circle cx="64" cy="70" r="17" stroke="#d946ef" stroke-width="1" opacity=".5"/>
+              <circle cx="64" cy="70" r="3.2" fill="#d946ef" class="p-dot"/>
+              <circle cx="64" cy="130" r="24" class="p-lens" stroke="url(#phoneStroke)" stroke-width="1.8"/>
+              <circle cx="64" cy="130" r="15" stroke="#d946ef" stroke-width="1" opacity=".5"/>
+              <circle cx="64" cy="130" r="3" fill="#d946ef" class="p-dot"/>
+              <circle cx="100" cy="100" r="6.5" class="p-flash" stroke="#c084fc" stroke-width="1.4"/>
+              <text x="94" y="58" class="p-label">50MP</text>
+              <line x1="94" y1="64" x2="118" y2="64" stroke="#c084fc" stroke-width=".8" opacity=".4"/>
+
+              <!-- logo -->
+              <g transform="translate(120,302)">
+                <circle r="36" class="p-logobg" stroke="url(#phoneStroke)" stroke-width="1.8"/>
+                <path d="M -18,-17 C -31,-3 -23,14 -3,19" stroke="#f1f5f9" stroke-width="2.8" stroke-linecap="round" fill="none" opacity=".9"/>
+                <path d="M 18,-17 C 31,-3 23,14 3,19" stroke="#f1f5f9" stroke-width="2.8" stroke-linecap="round" fill="none" opacity=".9"/>
+                <circle cx="0" cy="21" r="3.4" fill="#d946ef" class="p-dot"/>
+              </g>
+
+              <!-- bottom port -->
+              <rect x="108" y="476" width="24" height="4" rx="2" stroke="#c084fc" stroke-width="1" opacity=".4"/>
+            </svg>
+          </div>
+
+          <div class="phone-tag">
+            <span class="pt-dot"></span>manaus
+          </div>
+        </div>
+
+        <!-- info + terminal -->
+        <div class="maint-info">
+
+          <div class="maint-status">
+            <span class="mstat-dot"></span>
+            <span>ACTIVE DEVELOPMENT</span>
+          </div>
+
+          <h3 class="maint-device">manaus <span class="msep">—</span> Motorola Edge 40 Neo</h3>
+
+          <div class="maint-rom-row">
+            <span class="rom-chip os">Android 16</span>
+            
+          </div>
+
+          <div class="maint-badges">
+            <span class="mbadge">Custom ROM Developer</span>
+            <span class="mbadge">Android 16</span>
+            <span class="mbadge">OTA Supported</span>
+            <span class="mbadge">AOSP Based</span>
+            <span class="mbadge">Active Development</span>
+            <span class="mbadge">Custom ROM</span>
+          </div>
+
+          <div class="build-terminal" id="buildTerminal">
+            <div class="term-bar">
+              <span class="term-dot r"></span><span class="term-dot y"></span><span class="term-dot g"></span>
+              <span class="term-path">minit@aosp-build ~/android/crdroid-16 <em>[manaus]</em></span>
+            </div>
+            <pre class="term-body" id="termBody"></pre>
+            <div class="term-footer">
+              <span class="tf-left"><span class="tf-dot"></span>ACTIVE · MANAUS</span>
+              <span class="tf-right">KERNEL WORK</span>
+            </div>
+          </div>
+
         </div>
 
       </div>
@@ -592,56 +944,25 @@
         <h2 class="sec-title">Projects</h2>
       </div>
 
-      <div class="proj-grid">
+      
+<div class="proj-grid">
+  <a href="roms.html" class="pcard reveal" style="text-decoration:none;color:inherit;display:block;">
+    <div class="corner-tag live">OPEN</div>
+    <div class="card-status">
+      <div class="sdot live"></div>
+      <span class="slabel live">AOSP COLLECTION</span>
+    </div>
+    <h3>AOSP for Moto Edge 40 Neo</h3>
+    <div class="p-device">Motorola Edge 40 Neo</div>
+    <p class="p-desc">
+      Click here to view all available ROMs for Moto Edge 40 Neo including
+      crDroid, Evolution X and future builds.
+    </p>
+    <div class="plink">View all ROMs →</div>
+  </a>
+</div>
+</section>
 
-        <!-- crDroid -->
-        <div class="pcard reveal">
-          <div class="corner-tag live">RELEASED</div>
-          <div class="card-status">
-            <div class="sdot live"></div>
-            <span class="slabel live">Live Build</span>
-          </div>
-          <div class="rom-icon cr">🍦</div>
-          <h3>crDroid</h3>
-          <div class="p-device">Motorola Edge 40 Neo</div>
-          <div class="p-code">manaus</div>
-          <p class="p-desc">
-            Built from scratch for the Edge 40 Neo. Smooth, stable, and packed with features.
-            My first official AOSP build — compiled, tested, and shipped solo.
-          </p>
-          <div class="chips">
-            <span class="chip a">Android 16</span>
-            <span class="chip r">crDroid</span>
-            <span class="chip r">AOSP</span>
-          </div>
-          <a href="https://github.com/MinitxT" target="_blank" class="plink">View on GitHub →</a>
-        </div>
-
-        <!-- Evolution X -->
-        <div class="pcard upcoming reveal">
-          <div class="corner-tag upcoming">COMING SOON</div>
-          <div class="card-status">
-            <div class="sdot upcoming"></div>
-            <span class="slabel upcoming">In Development</span>
-          </div>
-          <div class="rom-icon evox">⚡</div>
-          <h3>Evolution X</h3>
-          <div class="p-device">Motorola Edge 40 Neo</div>
-          <div class="p-code">manaus</div>
-          <p class="p-desc">
-            The next build in the pipeline. More power, deeper customization, cleaner UI.
-            Currently in active development — stay tuned for the drop.
-          </p>
-          <div class="chips">
-            <span class="chip a">Android 16</span>
-            <span class="chip s">Evolution X</span>
-            <span class="chip s">In Dev</span>
-          </div>
-          <div class="plink off">⏳ In Development...</div>
-        </div>
-
-      </div>
-    </section>
 
     <!-- ══ GITHUB ══ -->
     <section id="github">
@@ -650,7 +971,7 @@
         <h2>Find Me on GitHub</h2>
         <p>Device trees, kernel sources, and all the ROM work live here.</p>
         <a href="https://github.com/MinitxT" target="_blank" class="gh-btn">
-          github.com/MinitxT →
+          github.com/Minit →
         </a>
       </div>
     </section>
@@ -690,6 +1011,11 @@
 
   <script>
   /* ══════════════════════════════════════
+     REDUCED MOTION
+  ══════════════════════════════════════ */
+  const REDUCE = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ══════════════════════════════════════
      CUSTOM CURSOR
   ══════════════════════════════════════ */
   const cur     = document.getElementById('cur');
@@ -722,7 +1048,9 @@
   });
 
   /* ══════════════════════════════════════
-     SAKURA CANVAS
+     PARTICLE ECOSYSTEM
+     layered: energy orbs → neon dust → glow particles → sparks
+     soft motion trails via translucent canvas fill, 60fps rAF
   ══════════════════════════════════════ */
   const sk  = document.getElementById('sk');
   const skx = sk.getContext('2d');
@@ -731,61 +1059,141 @@
   resize();
   window.addEventListener('resize',resize);
 
-  const PETAL_COLORS=[
-    [255,180,195],[255,110,175],[220,115,215],
-    [160,120,230],[225,165,225],[255,200,220]
-  ];
+  const MOBILE = window.innerWidth < 720;
+  const GLOW_COLORS = [[139,92,246],[236,72,153],[124,58,237],[192,132,252],[217,70,239]];
+  const rnd = (a,b)=> a + Math.random()*(b-a);
+  const pick = ()=> GLOW_COLORS[Math.floor(Math.random()*GLOW_COLORS.length)];
 
-  class Petal{
-    constructor(spread){
-      this.reset(spread);
-    }
-    reset(spread=false){
+  /* layer 1 — energy orbs: large, slow, heavily blurred */
+  class Orb{
+    constructor(){ this.reset(true); }
+    reset(spread){
       this.x = Math.random()*sk.width;
-      this.y = spread ? Math.random()*sk.height : -20;
-      this.sz = Math.random()*5+3;
-      this.vx = (Math.random()-.5)*1.4;
-      this.vy = Math.random()*1.3+.5;
-      this.rot= Math.random()*Math.PI*2;
-      this.rv = (Math.random()-.5)*.045;
-      this.op = Math.random()*.55+.18;
-      this.sw = Math.random()*1.8+.3;
-      this.swo= Math.random()*Math.PI*2;
-      this.sws= Math.random()*.018+.005;
-      this.col= PETAL_COLORS[Math.floor(Math.random()*PETAL_COLORS.length)];
+      this.y = spread ? Math.random()*sk.height : Math.random()*sk.height;
+      this.r = rnd(160,300);
+      this.vx = rnd(-.12,.12); this.vy = rnd(-.1,.1);
+      this.col = pick(); this.op = rnd(.05,.11);
+      this.pulse = rnd(0,Math.PI*2); this.ps = rnd(.004,.009);
+    }
+    update(){
+      this.x+=this.vx; this.y+=this.vy; this.pulse+=this.ps;
+      if(this.x<-this.r||this.x>sk.width+this.r||this.y<-this.r||this.y>sk.height+this.r) this.reset(false);
+    }
+    draw(){
+      const o = this.op*(.7+.3*Math.sin(this.pulse));
+      const [r,g,b]=this.col;
+      const grd = skx.createRadialGradient(this.x,this.y,0,this.x,this.y,this.r);
+      grd.addColorStop(0,`rgba(${r},${g},${b},${o})`);
+      grd.addColorStop(1,'rgba(0,0,0,0)');
+      skx.fillStyle=grd;
+      skx.beginPath(); skx.arc(this.x,this.y,this.r,0,Math.PI*2); skx.fill();
+    }
+  }
+
+  /* layer 2 — neon dust: tiny, numerous, drifting, twinkling */
+  class Dust{
+    constructor(){ this.reset(true); }
+    reset(spread){
+      this.x = Math.random()*sk.width;
+      this.y = spread ? Math.random()*sk.height : Math.random()*sk.height;
+      this.sz = rnd(.5,1.6);
+      this.vx = rnd(-.08,.08); this.vy = rnd(-.18,-.04);
+      this.op = rnd(.12,.4); this.col = pick();
+      this.tw = rnd(0,Math.PI*2); this.tws = rnd(.02,.05);
+    }
+    update(){
+      this.x+=this.vx; this.y+=this.vy; this.tw+=this.tws;
+      if(this.y<-10||this.x<-10||this.x>sk.width+10) this.reset(false);
+    }
+    draw(){
+      const o = this.op*(.5+.5*Math.sin(this.tw));
+      const [r,g,b]=this.col;
+      skx.fillStyle=`rgba(${r},${g},${b},${o})`;
+      skx.beginPath(); skx.arc(this.x,this.y,this.sz,0,Math.PI*2); skx.fill();
+    }
+  }
+
+  /* layer 3 — glow particles: soft bloom, gentle upward drift, sway */
+  class Glow{
+    constructor(){ this.reset(true); }
+    reset(spread){
+      this.x = Math.random()*sk.width;
+      this.y = spread ? Math.random()*sk.height : sk.height+rnd(0,40);
+      this.sz = rnd(1.4,3.6);
+      this.vx = rnd(-.18,.18); this.vy = rnd(-.55,-.18);
+      this.op = rnd(.25,.7); this.col = pick();
+      this.sw = rnd(.3,1.2); this.swo = rnd(0,Math.PI*2); this.sws = rnd(.008,.02);
     }
     update(){
       this.swo+=this.sws;
-      this.x  +=this.vx+Math.sin(this.swo)*this.sw*.28;
-      this.y  +=this.vy;
-      this.rot+=this.rv;
-      if(this.y>sk.height+24) this.reset();
+      this.x += this.vx + Math.sin(this.swo)*this.sw*.2;
+      this.y += this.vy;
+      if(this.y<-30) this.reset(false);
     }
     draw(){
+      const [r,g,b]=this.col;
       skx.save();
-      skx.translate(this.x,this.y);
-      skx.rotate(this.rot);
       skx.globalAlpha=this.op;
-      const[r,g,b]=this.col;
+      skx.shadowColor=`rgb(${r},${g},${b})`;
+      skx.shadowBlur=this.sz*4.5;
       skx.fillStyle=`rgb(${r},${g},${b})`;
-      skx.beginPath();
-      skx.ellipse(0,0,this.sz*1.55,this.sz*.78,0,0,Math.PI*2);
-      skx.fill();
-      skx.fillStyle='rgba(255,255,255,.28)';
-      skx.beginPath();
-      skx.ellipse(-this.sz*.28,-this.sz*.18,this.sz*.45,this.sz*.18,-.45,0,Math.PI*2);
-      skx.fill();
+      skx.beginPath(); skx.arc(this.x,this.y,this.sz,0,Math.PI*2); skx.fill();
       skx.restore();
     }
   }
 
-  const petals=Array.from({length:45},(_,i)=>new Petal(i<20));
+  /* layer 4 — sparks: rare, brief, bright flashes */
+  class Spark{
+    constructor(){ this.alive=false; }
+    spawn(){
+      this.x=Math.random()*sk.width; this.y=Math.random()*sk.height;
+      this.maxLife=rnd(18,34); this.life=this.maxLife;
+      this.sz=rnd(1,2.2); this.col=pick(); this.alive=true;
+    }
+    update(){ if(this.alive && --this.life<=0) this.alive=false; }
+    draw(){
+      if(!this.alive) return;
+      const t=this.life/this.maxLife;
+      const o = t>.7 ? (1-t)/.3 : t/.7;
+      skx.save();
+      skx.globalAlpha=o;
+      skx.shadowColor='#fff'; skx.shadowBlur=10;
+      skx.fillStyle='#fff';
+      skx.beginPath(); skx.arc(this.x,this.y,this.sz*(.6+t*.6),0,Math.PI*2); skx.fill();
+      skx.restore();
+    }
+  }
 
-  ;(function loop(){
-    skx.clearRect(0,0,sk.width,sk.height);
-    petals.forEach(p=>{ p.update(); p.draw(); });
-    requestAnimationFrame(loop);
-  })();
+  const ORB_N=MOBILE?3:6, DUST_N=MOBILE?40:90, GLOW_N=MOBILE?22:42, SPARK_N=7;
+  const orbs   = Array.from({length:ORB_N }, ()=>new Orb());
+  const dustP  = Array.from({length:DUST_N}, ()=>new Dust());
+  const glowsP = Array.from({length:GLOW_N}, ()=>new Glow());
+  const sparks = Array.from({length:SPARK_N},()=>new Spark());
+
+  if (REDUCE) {
+    // single static frame — no continuous motion for reduced-motion users
+    skx.fillStyle = '#000'; skx.fillRect(0,0,sk.width,sk.height);
+    orbs.forEach(o=>o.draw());
+    dustP.forEach(d=>d.draw());
+    glowsP.forEach(g=>g.draw());
+  } else {
+    ;(function loop(){
+      skx.fillStyle='rgba(0,0,0,.16)';      // soft fading trail instead of hard clear
+      skx.fillRect(0,0,sk.width,sk.height);
+
+      orbs.forEach(o=>{ o.update(); o.draw(); });
+      dustP.forEach(d=>{ d.update(); d.draw(); });
+      glowsP.forEach(g=>{ g.update(); g.draw(); });
+
+      if(Math.random()<.025){
+        const s = sparks.find(s=>!s.alive);
+        if(s) s.spawn();
+      }
+      sparks.forEach(s=>{ s.update(); s.draw(); });
+
+      requestAnimationFrame(loop);
+    })();
+  }
 
   /* ══════════════════════════════════════
      SCROLL REVEAL
@@ -809,6 +1217,119 @@
       if(ti>=TXT.length) clearInterval(iv);
     },78);
   },500);
+
+  /* ══════════════════════════════════════
+     PHONE PARALLAX / TILT
+  ══════════════════════════════════════ */
+  const stage  = document.getElementById('phoneStage');
+  const phone3 = document.getElementById('phone3d');
+  if (stage && phone3 && !REDUCE) {
+    stage.addEventListener('mousemove', e=>{
+      const r = stage.getBoundingClientRect();
+      const px = (e.clientX - r.left)/r.width  - .5;
+      const py = (e.clientY - r.top )/r.height - .5;
+      phone3.style.transform = `rotateY(${px*22}deg) rotateX(${py*-22}deg)`;
+    });
+    stage.addEventListener('mouseleave', ()=>{
+      phone3.style.transform = '';
+    });
+  }
+
+  /* ══════════════════════════════════════
+     ANIMATED BUILD TERMINAL
+  ══════════════════════════════════════ */
+  (function(){
+    const body = document.getElementById('termBody');
+    const wrap = document.getElementById('buildTerminal');
+    if(!body || !wrap) return;
+
+    // each line: [type, text]  type → cmd | ok | tag | dim | pink | blank
+    const LINES = [
+      ['cmd',  'repo init -u https://github.com/crdroidandroid/android.git -b 16.0'],
+      ['dim',  'Fetching manifest ... '],
+      ['ok',   'done ✓'],
+      ['blank',''],
+      ['cmd',  'source build/envsetup.sh && breakfast manaus'],
+      ['dim',  'including device/motorola/manaus/AndroidProducts.mk'],
+      ['tag',  'Moto Edge 40 Neo • Android 16 • '],
+      ['ok',   'ready ✓'],
+      ['blank',''],
+      ['cmd',  'brunch manaus'],
+      ['dim',  '[kernel] compiling with Clang 20 + LTO ...'],
+      ['dim',  '[system] building Android 16 framework ...'],
+      ['dim',  '[vendor] patching Motorola blobs ...'],
+      ['pink', '[rom] syncing crDroid Android 16 sources ...'],
+      ['pink', '[rom] generating OTA package ...'],
+      ['pink', '[ota] signing official build ...'],
+      ['blank',''],
+      ['tag',  'crDroidAndroid-16.0-manaus.zip ready for flash ✓'],
+      ['ok',   'Custom ROM Developer Build ✓'],
+    ];
+
+    function lineHTML(type, text){
+      if(type==='blank') return '';
+      if(type==='cmd')  return `<span class="c-cmd">${text}</span>`;
+      if(type==='ok')   return `<span class="c-ok">${text}</span>`;
+      if(type==='tag')  return `<span class="c-tag">${text}</span>`;
+      if(type==='pink') return `<span class="c-pink">${text}</span>`;
+      return `<span class="c-dim">${text}</span>`;
+    }
+
+    function renderInstant(){
+      body.innerHTML = LINES.map(([t,txt])=> t==='blank' ? '' : lineHTML(t,txt)).join('\n');
+    }
+
+    let started = false;
+    function startTyping(){
+      if(started) return; started = true;
+
+      if(REDUCE){ renderInstant(); return; }
+
+      body.innerHTML = '';
+      let li = 0;
+
+      function typeLine(){
+        if(li >= LINES.length){
+          // small pause, then loop for a living, breathing terminal
+          setTimeout(()=>{ started=false; li=0; body.innerHTML=''; startTyping(); }, 3600);
+          return;
+        }
+        const [type, text] = LINES[li];
+        if(type === 'blank'){
+          body.innerHTML += '\n';
+          li++; setTimeout(typeLine, 90);
+          return;
+        }
+        const span = document.createElement('span');
+        span.className = 'c-'+(type==='cmd'?'cmd':type==='ok'?'ok':type==='tag'?'tag':type==='pink'?'pink':'dim');
+        body.appendChild(span);
+        const cursor = document.createElement('span');
+        cursor.className = 'term-cursor';
+        body.appendChild(cursor);
+
+        let ci = 0;
+        const speed = type==='cmd' ? 26 : 10;
+        const iv = setInterval(()=>{
+          span.textContent += text[ci++];
+          body.scrollTop = body.scrollHeight;
+          if(ci >= text.length){
+            clearInterval(iv);
+            cursor.remove();
+            body.appendChild(document.createTextNode('\n'));
+            li++;
+            setTimeout(typeLine, type==='cmd' ? 260 : 70);
+          }
+        }, speed);
+      }
+      typeLine();
+    }
+
+    const tObs = new IntersectionObserver(entries=>{
+      entries.forEach(e=>{ if(e.isIntersecting) startTyping(); });
+    },{threshold:.35});
+    tObs.observe(wrap);
+  })();
+
 
   /* ══════════════════════════════════════
      MUSIC PLAYER
@@ -867,6 +1388,26 @@
       a.style.color = a.getAttribute('href')==='#'+cur ? '#8b5cf6' : '';
     });
   });
+
+  /* ══════════════════════════════════════
+     MOBILE NAV TOGGLE
+  ══════════════════════════════════════ */
+  const navToggle = document.getElementById('navToggle');
+  const navLinks  = document.getElementById('navLinks');
+  if (navToggle && navLinks) {
+    navToggle.addEventListener('click', ()=>{
+      const open = navLinks.classList.toggle('open');
+      navToggle.classList.toggle('open', open);
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    navLinks.querySelectorAll('a').forEach(a=>{
+      a.addEventListener('click', ()=>{
+        navLinks.classList.remove('open');
+        navToggle.classList.remove('open');
+        navToggle.setAttribute('aria-expanded','false');
+      });
+    });
+  }
 
   /* ══════════════════════════════════════
      PROFILE PHOTO (drag & drop support)
