@@ -24,7 +24,9 @@ AOSP Enthusiast | Custom ROM Developer | Student
 
 Hey, I'm **Minit**.
 
-I am a developer who builds custom Android ROMs from AOSP source and a photographer who captures moments through a smartphone lens. 
+I am a developer who builds custom Android ROMs from AOSP source,desgine website and a photographer who captures moments through a smartphone lens. 
+ 
+**Uderstanding how things work is my favorite hobby**
 
 Currently maintaining the **Motorola Edge 40 Neo (manaus)** with custom ROM development, kernel work, and Android 16 based projects.
 
@@ -32,7 +34,7 @@ Currently maintaining the **Motorola Edge 40 Neo (manaus)** with custom ROM deve
 
 ## ✨ Features
 
-- 🌌 **Modern AMOLED Dark UI** - Cyberpunk & glassmorphism aesthetic.
+- 🌌 **Modern AMOLED Dark UI** - sakura & glassmorphism aesthetic.
 - ⚡ **Smooth Animations** - Fluid interactions and floating elements.
 - 📱 **Responsive Design** - Desktop-first, mobile-friendly layout.
 - 🛠️ **AOSP Developer Portfolio** - Specialized terminal logs and device status.
@@ -46,7 +48,7 @@ Currently maintaining the **Motorola Edge 40 Neo (manaus)** with custom ROM deve
 | :--- | :--- |
 | **Android Version** | Android 16 |
 | **Development** | Active Custom ROM Development |
-| **Updates** | OTA Supported |
+| **Updates** |-- |
 | **Kernel** | Custom Kernel Optimizations |
 
 ---
@@ -54,7 +56,7 @@ Currently maintaining the **Motorola Edge 40 Neo (manaus)** with custom ROM deve
 ## 🏗️ Projects (AOSP Collection)
 
 Collection of all custom ROMs built for Moto Edge 40 Neo, including:
-- 🟢 **crDroid**
+- 🟢 **lineagse 0s**
 - 🔵 **Evolution X**
 - 🟣 **Future AOSP Builds**
 
