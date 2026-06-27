@@ -298,10 +298,25 @@
     .slabel { font-family:'JetBrains Mono',monospace; font-size:.64rem; letter-spacing:1.5px; text-transform:uppercase; }
     .slabel.live { color:var(--green); }
     .slabel.upcoming { color:var(--pink); }
+    .slabel.initial-red { color:#ff3232; text-shadow:0 0 10px rgba(255,50,50,.45); }
 
     .rom-meta { font-family:'JetBrains Mono',monospace; font-size:.74rem; color:var(--purple); margin-bottom:14px; }
     .rom-card.evox .rom-meta { color:var(--cyan); }
     .rom-desc { color:var(--muted); font-size:.88rem; line-height:1.65; margin-bottom:18px; max-width:480px; }
+
+    /* known-bug / info notes */
+    .rom-note {
+      display:flex; align-items:flex-start; gap:9px;
+      font-size:.82rem; line-height:1.55; margin-bottom:10px;
+      max-width:480px; color:var(--muted);
+    }
+    .rom-note .note-tag {
+      flex-shrink:0; font-family:'JetBrains Mono',monospace; font-size:.62rem;
+      letter-spacing:1px; text-transform:uppercase; padding:3px 9px;
+      border-radius:5px; white-space:nowrap; margin-top:1px;
+    }
+    .rom-note.bug .note-tag  { background:rgba(239,68,68,.13); color:#ff5050; border:1px solid rgba(239,68,68,.32); }
+    .rom-note.info .note-tag { background:rgba(255,95,173,.1); color:var(--pink); border:1px solid rgba(255,95,173,.28); }
 
     .chips { display:flex; flex-wrap:wrap; gap:7px; }
     .chip { padding:4px 11px; border-radius:6px; font-family:'JetBrains Mono',monospace; font-size:.66rem; }
@@ -326,6 +341,7 @@
     .act-btn.primary:hover { transform:translateY(-2px); box-shadow:0 16px 34px rgba(224,23,125,.45); }
     .act-btn.secondary {
       border:1px solid rgba(255,45,149,.4); background:rgba(255,45,149,.08); color:var(--purple);
+      width:100%;
     }
     .act-btn.secondary:hover { background:rgba(255,45,149,.18); color:var(--text); }
     .act-btn.guide {
@@ -337,11 +353,29 @@
     }
     .act-btn.ghost:hover { border-color:var(--pink); color:var(--pink); background:rgba(255,95,173,.08); }
 
+    /* .img dropdown (boot.img / vendor_boot.img) */
+    .img-dropdown { position:relative; }
+    .img-dropdown .dl-img-toggle { width:100%; border:none; font-family:inherit; }
+    .img-dropdown-menu {
+      position:absolute; top:calc(100% + 8px); left:0; right:0;
+      background:var(--card-2); border:1px solid var(--border); border-radius:11px;
+      padding:6px; display:none; flex-direction:column; gap:4px;
+      box-shadow:0 14px 32px rgba(0,0,0,.55); z-index:30;
+    }
+    .img-dropdown.open .img-dropdown-menu { display:flex; }
+    .img-dropdown-item {
+      display:block; padding:9px 12px; border-radius:8px;
+      font-family:'JetBrains Mono',monospace; font-size:.74rem; color:var(--muted);
+      text-decoration:none; transition:all .25s; text-align:center;
+    }
+    .img-dropdown-item:hover { background:rgba(255,45,149,.14); color:var(--text); }
+
     @media(max-width:760px){
       .rom-card { flex-direction:column; align-items:stretch; text-align:center; padding:30px 24px; }
       .rom-logo { margin:0 auto; }
       .rom-name-row { justify-content:center; }
       .rom-desc { margin:0 auto 18px; }
+      .rom-note { margin:0 auto 10px; }
       .chips { justify-content:center; margin-bottom:22px; }
       .rom-actions { width:100%; min-width:0; }
     }
@@ -477,7 +511,7 @@
 
         <!-- LineageOS -->
         <div class="rom-card cr reveal">
-          <div class="corner-tag live">ACTIVE</div>
+          <div class="corner-tag upcoming">SOON</div>
 
           <div class="rom-logo cr">
             <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -498,8 +532,8 @@
           <div class="rom-info">
             <div class="rom-name-row">
               <h3>LineageOS</h3>
-              <span class="sdot live"></span>
-              <span class="slabel live">Initial</span>
+              <span class="sdot upcoming"></span>
+              <span class="slabel upcoming">Soon</span>
             </div>
             <div class="rom-meta">Android 16 · manaus</div>
             <p class="rom-desc">
@@ -523,7 +557,7 @@
 
         <!-- Evolution X -->
         <div class="rom-card evox reveal">
-          <div class="corner-tag live">SOON</div>
+          <div class="corner-tag live">ACTIVE</div>
 
           <div class="rom-logo evox">
             <svg viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -545,13 +579,21 @@
             <div class="rom-name-row">
               <h3>Evolution X</h3>
               <span class="sdot live"></span>
-              <span class="slabel live">stable</span>
+              <span class="slabel initial-red">Initial build</span>
             </div>
             <div class="rom-meta">Android 16 · manaus</div>
             <p class="rom-desc">
               A Pixel-inspired custom ROM built on a clean AOSP foundation —
               stock-like feel with extra customization on top.
             </p>
+            <div class="rom-note bug">
+              <span class="note-tag">Known bug</span>
+              <span>Fingerprint sensor (FP) is currently broken on this build.</span>
+            </div>
+            <div class="rom-note info">
+              <span class="note-tag">Build type</span>
+              <span>This is a Vanilla build — no extra theming or mods on top of stock Evolution X.</span>
+            </div>
             <div class="chips">
               <span class="chip c">Android 16</span>
               <span class="chip r">Pixel UI</span>
@@ -559,11 +601,20 @@
             </div>
           </div>
 
-          <!-- TODO: replace href="#" with your GitHub release links -->
           <div class="rom-actions">
-            <a href="#" class="act-btn primary dl-rom">⬇ Download ROM</a>
-            <a href="#" class="act-btn secondary dl-img">📦 Download .img file</a>
-            <a href="#" class="act-btn guide">📖 Installation Guide</a>
+            <a href="https://pixeldrain.com/u/nV1TVKV7" target="_blank" class="act-btn primary dl-rom">⬇ Download ROM</a>
+
+            <div class="img-dropdown" id="imgDropdownEvoX">
+              <button type="button" class="act-btn secondary dl-img-toggle">📦 Download .img file ▾</button>
+              <div class="img-dropdown-menu">
+                <a href="https://pixeldrain.com/u/gDQBY5Gi" target="_blank" class="img-dropdown-item">boot.img</a>
+                <a href="https://pixeldrain.com/u/qgHxY2jw" target="_blank" class="img-dropdown-item">vendor_boot.img</a>
+              </div>
+            </div>
+
+            <a href="https://t.me/minitxt00/27" target="_blank" class="act-btn guide">📖 Installation Guide</a>
+
+            <a href="https://t.me/minitxt00/4" target="_blank" class="act-btn ghost">📸 Screenshots</a>
           </div>
         </div>
 
@@ -609,7 +660,7 @@
         <div class="gh-ico">🐙</div>
         <h2>Source &amp; Releases</h2>
         <p>Device trees, kernel sources, and every ROM build live here.</p>
-        <a href="https://github.com/Minit" target="_blank" class="gh-btn">
+        <a href="https://github.com/Minitxt" target="_blank" class="gh-btn">
           github.com/Minit →
         </a>
       </div>
@@ -769,6 +820,28 @@
           delete btn.dataset.busy;
         }, 1800);
       }, 900);
+    });
+  });
+
+  /* ══════════════════════════════════════
+     .IMG FILE DROPDOWN (boot.img / vendor_boot.img)
+  ══════════════════════════════════════ */
+  document.querySelectorAll('.img-dropdown').forEach(dd=>{
+    const toggle = dd.querySelector('.dl-img-toggle');
+    if(!toggle) return;
+    toggle.addEventListener('click', (e)=>{
+      e.stopPropagation();
+      const wasOpen = dd.classList.contains('open');
+      document.querySelectorAll('.img-dropdown.open').forEach(o=>{ if(o!==dd) o.classList.remove('open'); });
+      dd.classList.toggle('open', !wasOpen);
+    });
+    dd.querySelectorAll('.img-dropdown-item').forEach(item=>{
+      item.addEventListener('click', ()=> dd.classList.remove('open'));
+    });
+  });
+  document.addEventListener('click', (e)=>{
+    document.querySelectorAll('.img-dropdown.open').forEach(dd=>{
+      if(!dd.contains(e.target)) dd.classList.remove('open');
     });
   });
 
